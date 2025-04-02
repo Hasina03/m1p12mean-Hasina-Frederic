@@ -46,6 +46,27 @@
       </li>
 
       <li class="mb-1 group relative">
+        <button (click)="toggleMenu('prestation')" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+          <i class="ri-home-2-line mr-3 text-lg"></i>
+          <span class="text-sm">Prestations</span>
+        </button>
+
+        <!-- Sous-menu pour le Prestation -->
+        <ul *ngIf="isPrestationMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
+          <li class="mb-1 group">
+            <a routerLink="/manager/prestations" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+              <span class="text-sm">Liste des prestation</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/manager/prestations/add" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+              <span class="text-sm">Creer prestation</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="mb-1 group relative">
         <button (click)="toggleMenu('vehicules')" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
           <i class="ri-home-2-line mr-3 text-lg"></i>
           <span class="text-sm">Véhicules</span>

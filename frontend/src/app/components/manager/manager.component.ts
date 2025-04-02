@@ -16,6 +16,7 @@ export class ManagerComponent {
   user: any = { name: '', role: '' };
   isDropdownOpen = false;
   isMenuVisible = false;
+  isPrestationMenuVisible = false;
   isStockMenuVisible: boolean = false;
 
   constructor(private utilisateurService: UtilisateurService,private router: Router) {}
@@ -39,9 +40,12 @@ export class ManagerComponent {
     } else if (menu === 'vehicules') {
       this.isMenuVisible = !this.isMenuVisible;
       if (this.isMenuVisible) this.isStockMenuVisible = false; // Ferme l'autre menu
+    } else if (menu === 'prestation') {
+      this.isPrestationMenuVisible  = !this.isPrestationMenuVisible ;
+      if (this.isPrestationMenuVisible ) this.isStockMenuVisible = false; // Ferme l'autre menu
     }
   }
-  
+
 
   logout(): void {
     localStorage.removeItem('token'); // Supprimer le token
