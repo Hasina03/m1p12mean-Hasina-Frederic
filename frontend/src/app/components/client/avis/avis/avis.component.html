@@ -1,0 +1,21 @@
+<div class="container mx-auto p-6 max-w-lg bg-white shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">{{ isEdit ? 'Modifier' : 'Ajouter' }} un avis</h2>
+    <form (ngSubmit)="submitAvis()" class="space-y-4">
+      <div>
+        <label class="block text-gray-700">Note (1 à 5)</label>
+        <select class="w-full px-4 py-2 border rounded-lg" [(ngModel)]="avis.note" name="note">
+          <option [value]="null">Aucune note</option>
+          <option *ngFor="let i of [1,2,3,4,5]" [value]="i">{{ i }}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-700">Commentaire</label>
+        <textarea class="w-full px-4 py-2 border rounded-lg" [(ngModel)]="avis.commentaire" name="commentaire"></textarea>
+      </div>
+      <div class="flex justify-between">
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">{{ isEdit ? 'Modifier' : 'Ajouter' }}</button>
+        <button *ngIf="isEdit" type="button" class="bg-red-600 text-white px-4 py-2 rounded" (click)="deleteAvis()">Supprimer</button>
+        <button class="bg-gray-500 text-white px-4 py-2 rounded" routerLink="/client/rendez-vous">Annuler</button>
+      </div>
+    </form>
+</div>

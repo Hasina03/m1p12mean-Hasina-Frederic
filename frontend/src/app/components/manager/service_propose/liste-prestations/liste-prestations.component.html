@@ -1,0 +1,42 @@
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Liste des Prestations</h1>
+    <button
+      (click)="navigateToAddForm()"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+      Ajouter une Prestation
+    </button>
+  </div>
+
+  <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+    <table class="table-auto w-full border-collapse">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="p-4 text-left">Nom</th>
+          <th class="p-4 text-left">Description</th>
+          <th class="p-4 text-left">Prix Main d'Œuvre</th>
+          <th class="p-4 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prestation of prestations" class="border-b hover:bg-gray-100">
+          <td class="p-4">{{ prestation.nom }}</td>
+          <td class="p-4">{{ prestation.description }}</td>
+          <td class="p-4">{{ prestation.prix_main_oeuvre | currency:'EUR' }}</td>
+          <td class="p-4 flex justify-center space-x-2">
+            <button
+              (click)="navigateToEditForm(prestation._id)"
+              class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+              Modifier
+            </button>
+            <button
+              (click)="deletePrestation(prestation._id)"
+              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

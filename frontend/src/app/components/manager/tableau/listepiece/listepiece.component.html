@@ -1,0 +1,58 @@
+<div class="max-w-[1200px] mx-auto">
+  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border min-h-[400px]">
+    <div class="flex items-center justify-between p-4">
+      <h2 class="text-lg font-semibold text-slate-700">Liste des pièces</h2>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchTermChange()"
+        placeholder="Rechercher par nom de pièce..."
+        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
+      />
+      <!-- Champ pour rechercher par véhicule -->
+      <input
+        type="text"
+        [(ngModel)]="vehicleSearchTerm"
+        (ngModelChange)="onSearchTermChange()"
+        placeholder="Rechercher par véhicule (Marque ou Modèle)"
+        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
+      />
+      <!-- Sélecteur pour le type de moteur -->
+      <select [(ngModel)]="engineSearchTerm" (ngModelChange)="onSearchTermChange()" class="px-4 py-2 border border-gray-300 rounded-md">
+        <option value="">Sélectionner type moteur</option>
+        <option value="essence">Essence</option>
+        <option value="diesel">Diesel</option>
+      </select>
+    </div>
+
+    <div class="p-0 overflow-scroll h-[500px]">
+      <table class="w-full mt-4 text-left table-auto min-w-max">
+        <thead>
+          <tr class="bg-slate-50 border-y border-slate-200">
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Nom</th>
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Prix</th>
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Véhicule</th>
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Type moteur</th>
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let piece of filteredPieces | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-slate-200 hover:bg-slate-100">
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.nom }}</td>
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.prix}} Ar</td>
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.vehicule?.marque }} {{ piece.types[0]?.vehicule?.modele }} ({{ piece.types[0]?.vehicule?.annee }})</td>
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.vehicule?.type_moteur }}</td>
+            <td class="p-4 text-base text-slate-700 text-center flex justify-center space-x-2">
+              <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs" (click)="deletePiece(piece._id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between p-3">
+      <p class="block text-base text-slate-500">Page {{ page }} de {{ (pieces.length / itemsPerPage) | number: '1.0-0' }}</p>
+      <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+    </div>
+  </div>
+</div>

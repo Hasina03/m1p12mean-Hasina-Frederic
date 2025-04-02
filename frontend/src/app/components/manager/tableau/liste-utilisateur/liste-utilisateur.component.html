@@ -1,0 +1,74 @@
+<div class="max-w-[1200px] mx-auto">
+  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border">
+    <div class="flex items-center justify-between p-4">
+      <h2 class="text-xl font-semibold text-slate-700">Liste des utilisateurs</h2>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchTermChange()"
+        placeholder="Rechercher par email..."
+        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md text-base"
+      />
+    </div>
+    <div class="p-0 overflow-scroll h-[500px]">
+      <table class="w-full mt-4 text-left table-auto min-w-max">
+        <thead>
+          <tr class="bg-slate-50 border-y border-slate-200">
+            <th class="p-4 text-base font-medium text-slate-600">Membre</th>
+            <th class="p-4 text-base font-medium text-slate-600">Téléphone</th>
+            <th class="p-4 text-base font-medium text-slate-600">Rôle</th>
+            <th class="p-4 text-base font-medium text-slate-600">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let utilisateur of filteredUtilisateurs | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-slate-200 hover:bg-slate-100">
+            <td class="p-4 border-b border-slate-200">
+              <div class="flex items-center gap-3">
+                <img src="https://media.istockphoto.com/id/1495088043/fr/vectoriel/ic%C3%B4ne-de-profil-utilisateur-avatar-ou-ic%C3%B4ne-de-personne-photo-de-profil-symbole-portrait.jpg?s=612x612&w=0&k=20&c=moNRZjYtVpH-I0mAe-ZfjVkuwgCOqH-BRXFLhQkZoP8="
+                  alt="John Michael" class="relative inline-block h-10 w-10 !rounded-full object-cover object-center" />
+                <div class="flex flex-col">
+                  <p class="text-base font-semibold text-slate-700">
+                    {{ utilisateur.nom }} {{ utilisateur.prenom }}
+                  </p>
+                  <p class="text-base text-slate-500">
+                    {{ utilisateur.email }}
+                  </p>
+                </div>
+              </div>
+            </td>
+            <td class="p-4 text-base text-slate-700">{{ utilisateur.telephone }}</td>
+            <td class="p-4 text-base text-slate-700">{{ utilisateur.role }}</td>
+            <td class="p-4 text-base text-slate-700 flex space-x-2">
+              <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm" (click)="openRoleModal(utilisateur)">Changer rôle</button>
+              <button class="bg-red-500 text-white px-4 py-2 rounded-md text-sm" (click)="deleteUtilisateur(utilisateur._id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between p-3">
+      <p class="block text-base text-slate-500">
+        Page {{ page }} de {{ (utilisateurs.length / itemsPerPage) | number: '1.0-0' }}
+      </p>
+      <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+    </div>
+  </div>
+</div>
+<div *ngIf="isRoleModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-md w-1/4">
+      <h3 class="text-lg font-semibold text-slate-800 mb-4">Changer le rôle de {{ selectedUtilisateur?.nom }}</h3>
+      <div>
+          <label for="role" class="block text-sm font-medium text-gray-700">Sélectionner un rôle</label>
+          <select id="role" [(ngModel)]="newRole" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md">
+              <option value="manager">Manager</option>
+              <option value="mecanicien">Mécanicien</option>
+              <option value="client">Client</option>
+          </select>
+      </div>
+      <div class="mt-4 flex justify-center gap-x-2">
+          <button class="bg-gray-300 px-4 py-2 rounded-md" (click)="closeRoleModal()">Annuler</button>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-md" (click)="updateRole(selectedUtilisateur._id, newRole)">Valider</button>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-4">📅 Liste des Rendez-vous</h1>
+
+    <div class="bg-white shadow-lg rounded-lg p-4">
+      <table class="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="border border-gray-300 p-2 text-left">ID</th>
+            <th class="border border-gray-300 p-2 text-left">Date</th>
+            <th class="border border-gray-300 p-2 text-left">Client</th>
+            <th class="border border-gray-300 p-2 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rdv of rendezVousList" class="hover:bg-gray-100 transition">
+            <td class="border border-gray-300 p-2">{{ rdv.id }}</td>
+            <td class="border border-gray-300 p-2">{{ rdv.date }}</td>
+            <td class="border border-gray-300 p-2">{{ rdv.client.nom }}</td>
+            <td class="border border-gray-300 p-2 text-center">
+            <button
+              (click)="viewDetails(rdv.id)"
+              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+              Voir détails
+            </button>
+            </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>

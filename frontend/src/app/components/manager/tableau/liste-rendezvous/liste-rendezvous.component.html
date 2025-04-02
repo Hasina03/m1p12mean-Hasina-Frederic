@@ -1,0 +1,162 @@
+<div class="p-6 bg-white shadow-lg rounded-lg h-[600px] ">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Liste des Rendez-vous</h2>
+  <div class="flex justify-between items-center mb-4">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchTermChange()"
+      placeholder="Rechercher par nom/statut..."
+      class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
+    />
+  </div>
+  <div class="overflow-auto h-[calc(100%_-_100px)]">
+  <table class="w-full border border-gray-300 rounded-lg overflow-hidden shadow-md">
+    <thead class="bg-gray-200 text-gray-700">
+      <tr>
+        <th class="px-4 py-3 border">Nom</th>
+        <th class="px-4 py-3 border">Date</th>
+        <th class="px-4 py-3 border">Prestation</th>
+        <th class="px-4 py-3 border">Status</th>
+        <th class="px-4 py-3 border">Mécanicien</th>
+        <th class="px-4 py-3 border">Détails du véhicule</th>
+        <th class="px-4 py-3 border">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-600">
+      <tr class="hover:bg-gray-100 transition" *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
+        <td class="px-4 py-3 border whitespace-nowrap">
+          {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
+        </td>
+
+
+        <td class="px-4 py-3 border">{{ rendezvous.date_rdv | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td class="px-4 py-3 border">
+          <ul class="list-disc pl-4">
+            <li *ngFor="let prestation of rendezvous.prestations">
+              {{ prestation.prestation_id?.nom }} -  : {{ prestation.statuts?.En_attente | date:'dd/MM/yyyy HH:mm' }}
+            </li>
+          </ul>
+        </td>
+        <td class="px-4 py-3 border">{{ rendezvous.statut }}</td>
+        <td class="px-4 py-3 border whitespace-nowrap">
+          {{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}
+        </td>
+        <td class="px-4 py-3 border text-center">
+          <button (click)="openModal(rendezvous.vehicule_id)"
+                  class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition">
+            Voir Détails
+          </button>
+        </td>
+        <td class="px-4 py-3 border text-center">
+          <button class="bg-gray-500 text-white px-3 py-1 rounded-md" (click)="updatestatus(rendezvous._id)">Valider</button>
+          <button class="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600 transition"
+          (click)="openReporterModal(rendezvous._id)">Reporter</button>
+          <button (click)="openMecanicienModal(rendezvous)"
+          class="bg-gray-500 text-white px-1 py-1 rounded ml-2 mt-2 transition">
+            + Mécanicien
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="flex items-center justify-between p-3">
+  <p class="block text-sm text-slate-500">
+    Page {{ page }} de {{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}
+  </p>
+  <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+</div>
+
+
+<!-- Modal Véhicule -->
+<div *ngIf="isModalOpen"
+     class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
+    <div class="flex justify-between items-center">
+      <h5 class="text-xl font-semibold">Détails du Véhicule</h5>
+      <button type="button" class="text-gray-500" (click)="closeModal()">
+        <span class="text-2xl">&times;</span>
+      </button>
+    </div>
+    <div class="mt-4">
+      <table class="w-full table-auto border-collapse border border-gray-300">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 text-left">Champ</th>
+            <th class="px-4 py-2 text-left">Détail</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="selectedVehicule">
+          <tr>
+            <td class="border px-4 py-2"><strong>Marque</strong></td>
+            <td class="border px-4 py-2">{{ selectedVehicule?.marque }}</td>
+          </tr>
+          <tr>
+            <td class="border px-4 py-2"><strong>Modèle</strong></td>
+            <td class="border px-4 py-2">{{ selectedVehicule?.modele }}</td>
+          </tr>
+          <tr>
+            <td class="border px-4 py-2"><strong>Année</strong></td>
+            <td class="border px-4 py-2">{{ selectedVehicule?.annee }}</td>
+          </tr>
+          <tr>
+            <td class="border px-4 py-2"><strong>Type</strong></td>
+            <td class="border px-4 py-2">{{ selectedVehicule?.type }}</td>
+          </tr>
+          <tr>
+            <td class="border px-4 py-2"><strong>Type_moteur</strong></td>
+            <td class="border px-4 py-2">{{ selectedVehicule?.type_moteur }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ajout Mécanicien -->
+<div *ngIf="isMecanicienModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-md w-1/4">
+    <h3 class="text-lg font-semibold text-slate-700 mb-4">
+      Ajouter un mécanicien pour le rendez-vous
+    </h3>
+    <div>
+      <label for="mecanicien" class="block text-sm font-medium text-gray-700">
+
+      </label>
+      <select id="mecanicien" [(ngModel)]="selectedMecanicien" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md">
+        <option value="" disabled selected>Sélectionner un mécanicien</option>
+        <option *ngFor="let mecano of mecaniciensList" [value]="mecano._id">
+          {{ mecano.nom }}
+        </option>
+      </select>
+    </div>
+    <div class="mt-4 flex justify-center gap-x-2">
+      <button class="bg-gray-300 px-4 py-2 rounded-md" (click)="closeMecanicienModal()">Annuler</button>
+      <button class="bg-green-500 text-white px-4 py-2 rounded-md" (click)="assignMecanicien()">Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Reporter -->
+<div *ngIf="isReporterModalOpen"
+     class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
+    <div class="flex justify-between items-center">
+      <h5 class="text-xl font-semibold">Reporter le rendez-vous</h5>
+      <button type="button" class="text-gray-500" (click)="closeReporterModal()">
+        <span class="text-2xl">&times;</span>
+      </button>
+    </div>
+    <div class="mt-4">
+      <label for="newDate" class="block text-sm font-medium text-gray-700">Sélectionner une nouvelle date</label>
+      <input type="datetime-local" id="newDate" [(ngModel)]="newDate" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md" />
+    </div>
+    <div class="mt-4 flex justify-center gap-x-2">
+      <button class="bg-gray-300 px-4 py-2 rounded-md" (click)="closeReporterModal()">Annuler</button>
+      <button class="bg-green-500 text-white px-4 py-2 rounded-md" (click)="updateRendezVousDate()">Valider</button>
+    </div>
+  </div>
+</div>
+
+
+

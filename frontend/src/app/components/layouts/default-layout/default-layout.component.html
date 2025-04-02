@@ -1,0 +1,54 @@
+<div class="flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed top-0 z-40 flex flex-wrap items-center justify-between w-full px-4 py-5 bg-white shadow-md bg-opacity-90">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <a href="/" class="text-3xl font-bold">Mon Garage</a>
+        </div>
+
+        <!-- Menu -->
+        <div class="hidden lg:flex lg:items-center">
+          <a routerLink="/acceuil" class="px-4 py-2 text-gray-600 hover:text-gray-900">Accueil</a>
+          <a routerLink="/rendez-vous/67d86e6bd95f8a34aeb5649b/suivi-prestations" class="px-4 py-2 text-gray-600 hover:text-gray-900">Mes rendez-vous</a>
+
+          <!-- Dropdown Nos Prestations -->
+          <div class="relative">
+            <button (click)="isDropdownOpen = !isDropdownOpen" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900">
+              Nos Prestations
+              <span [ngClass]="{ 'rotate-180': isDropdownOpen }" class="ml-2 transition-transform">
+                ▼
+              </span>
+            </button>
+
+            <div *ngIf="isDropdownOpen" class="absolute left-0 mt-2 bg-white shadow-lg rounded-md">
+              <a *ngFor="let prestation of prestations"
+                [routerLink]="'/prestation/' + prestation._id"
+                class="block px-4 py-2 text-gray-600 hover:bg-gray-100">
+                {{ prestation.nom }}
+              </a>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Auth buttons -->
+        <div class="hidden lg:flex">
+          <a routerLink="/login" class="px-4 py-2 text-white bg-gray-600 rounded hover:bg-gray-700">Se connecter</a>
+          <a routerLink="/register" class="ml-4 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">S'inscrire</a>
+        </div>
+      </nav>
+
+      <!-- Contenu principal -->
+      <div class="flex-grow w-full p-6 mt-20">
+        <router-outlet></router-outlet>
+      </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center p-4 mt-4">
+      <p>© 2025 Mon Garage - Tous droits réservés</p>
+      <p class="text-sm mt-2">Réalisé par : RAZAFIMANANTSOA Hasina & Frederic</p>
+    </footer>
+
+  </div>

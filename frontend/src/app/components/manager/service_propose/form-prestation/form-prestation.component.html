@@ -1,0 +1,64 @@
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">
+    {{ prestation._id ? 'Modifier la Prestation' : 'Ajouter une Prestation' }}
+  </h2>
+
+  <form (ngSubmit)="submit()" class="space-y-6">
+    <!-- Champ Nom -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Nom</label>
+      <input type="text" [(ngModel)]="prestation.nom" name="nom"
+        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
+    </div>
+
+    <!-- Champ Description -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea [(ngModel)]="prestation.description" name="description"
+        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
+      </textarea>
+    </div>
+
+    <!-- Champ Prix Main d'Œuvre -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Prix Main d'Œuvre</label>
+      <input type="number" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre"
+        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
+    </div>
+
+    <!-- Gestion du processus -->
+    <div>
+      <h3 class="text-lg font-semibold text-gray-800">Processus</h3>
+      <div *ngFor="let etape of prestation.processus; let i = index" class="bg-gray-100 p-4 rounded-md mb-3">
+        <label class="block text-sm font-medium text-gray-700">Nom de l'Étape</label>
+        <input type="text" [(ngModel)]="etape.nom_etape" name="nom_etape_{{i}}"
+          class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+
+        <label class="block text-sm font-medium text-gray-700 mt-2">Pièces Possibles</label>
+        <select [(ngModel)]="etape.pieces_possibles" name="pieces_possibles_{{i}}" multiple
+          class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none">
+          <option *ngFor="let piece of pieces" [value]="piece._id">{{ piece.nom }}</option>
+        </select>
+
+        <button type="button" (click)="removeEtape(i)"
+          class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
+          Supprimer Étape
+        </button>
+      </div>
+      <button type="button" (click)="addEtape()"
+        class="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
+        Ajouter Étape
+      </button>
+    </div>
+
+    <!-- Boutons d'actions -->
+    <div class="flex justify-end space-x-2">
+      <button type="button" (click)="cancel()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+        Annuler
+      </button>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        {{ prestation._id ? 'Mettre à jour' : 'Ajouter' }}
+      </button>
+    </div>
+  </form>
+</div>

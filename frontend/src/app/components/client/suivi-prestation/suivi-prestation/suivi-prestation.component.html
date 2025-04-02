@@ -1,0 +1,26 @@
+<div class="container mx-auto p-6">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Suivi des Prestations</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-white shadow-md rounded-lg">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-4 py-2 text-left">Prestation</th>
+            <th class="px-4 py-2 text-left">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prestation of prestations" class="border-b">
+            <td class="px-4 py-2">{{ prestation.prestation }}</td>
+            <td class="px-4 py-2 font-bold" [ngClass]="{
+              'text-yellow-500': prestation.statut === 'En attente',
+              'text-blue-500': prestation.statut === 'En cours',
+              'text-red-500': prestation.statut === 'Annulé',
+              'text-green-500': prestation.statut === 'Terminé'
+            }">
+              {{ prestation.statut }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

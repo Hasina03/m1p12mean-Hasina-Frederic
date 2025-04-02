@@ -1,0 +1,32 @@
+<div class="max-w-5xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg" *ngIf="prestation; else loading">
+  <h1 class="text-3xl font-bold text-gray-900">{{ prestation.nom }}</h1>
+  <p class="mt-2 text-gray-700">{{ prestation.description }}</p>
+
+  <div class="mt-6">
+    <h2 class="text-xl font-semibold text-gray-800">Détails des tarifs</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 mt-4">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-4 py-2 text-left border">Type de véhicule</th>
+            <th *ngFor="let processus of getProcessusList()" class="px-4 py-2 text-left border">{{ processus }}</th>
+            <th class="px-4 py-2 text-left border">Prix total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vehicule of prestation.prix_par_vehicule">
+            <td class="px-4 py-2 border">{{ vehicule.vehicule }}</td>
+            <td *ngFor="let processus of getProcessusList()" class="px-4 py-2 border">
+              {{ vehicule.prixPieces[processus] || 'Pièce indisponible' }}
+            </td>
+            <td class="px-4 py-2 border font-bold">{{ vehicule.prixTotal }} Ar</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="text-center text-gray-500">Chargement des données...</p>
+</ng-template>
