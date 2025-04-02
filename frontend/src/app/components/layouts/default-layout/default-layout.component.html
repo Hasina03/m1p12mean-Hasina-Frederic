@@ -9,7 +9,8 @@
         <!-- Menu -->
         <div class="hidden lg:flex lg:items-center">
           <a routerLink="/acceuil" class="px-4 py-2 text-gray-600 hover:text-gray-900">Accueil</a>
-          <a routerLink="/rendez-vous/67d86e6bd95f8a34aeb5649b/suivi-prestations" class="px-4 py-2 text-gray-600 hover:text-gray-900">Mes rendez-vous</a>
+          <a (click)="checkAuth()" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Mes rendez-vous</a>
+
 
           <!-- Dropdown Nos Prestations -->
           <div class="relative">
@@ -43,12 +44,9 @@
       <div class="flex-grow w-full p-6 mt-20">
         <router-outlet></router-outlet>
       </div>
-
-
     <!-- Footer -->
     <footer class="bg-gray-800 text-white text-center p-4 mt-4">
       <p>© 2025 Mon Garage - Tous droits réservés</p>
-      <p class="text-sm mt-2">Réalisé par : RAZAFIMANANTSOA Hasina & Frederic</p>
+      <p class="text-sm mt-2">Réalisé par : RAZAFIMANANTSOA Hasina &Rakotonirina Lala Frédéric</p>
     </footer>
-
   </div>

@@ -19,7 +19,7 @@
         <label for="vehicule" class="block text-sm font-semibold text-slate-600">Véhicule</label>
         <select
           id="vehicule"
-          [(ngModel)]="newPiece.types[0].vehicule"
+          [(ngModel)]="newPiece.variantes[0].type_vehicule"
           name="vehicule"
           class="w-full px-4 py-2 border border-gray-300 rounded-md"
           required
@@ -36,7 +36,7 @@
         <input
           type="number"
           id="prix"
-          [(ngModel)]="newPiece.types[0].prix"
+          [(ngModel)]="newPiece.variantes[0].prix"
           name="prix"
           class="w-full px-4 py-2 border border-gray-300 rounded-md"
           required
