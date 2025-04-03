@@ -1,0 +1,17 @@
+<div class="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md space-y-4">
+    <h2 class="text-xl font-semibold">Sélectionner un véhicule</h2>
+    <select [(ngModel)]="selectedVehiculeId" class="w-full border rounded p-2">
+      <option *ngFor="let vehicule of vehicules" [value]="vehicule._id">{{ vehicule.nom }}</option>
+    </select>
+
+    <h2 class="text-xl font-semibold mt-4">Sélectionner les prestations</h2>
+    <div *ngFor="let prestation of prestations" class="flex items-center space-x-2">
+      <input type="checkbox" [value]="prestation._id" (change)="togglePrestation(prestation._id)"
+             [checked]="selectedPrestations.includes(prestation._id)" />
+      <label>{{ prestation.nom }}</label>
+    </div>
+
+    <button (click)="genererDevis()" class="mt-4 bg-blue-500 text-white p-2 rounded">
+      Générer le devis
+    </button>
+  </div>
