@@ -7,7 +7,9 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class RendezvousService {
+  private apitype = `${environment.apiUrl}/devis`;
  private apiUrl= `${environment.apiUrl}/rendezvous`;
+
 
   constructor(private http: HttpClient) { }
 
@@ -18,6 +20,11 @@ export class RendezvousService {
       'Content-Type': 'application/json'
     });
   }
+  getFacture(rendezvousId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/facture`, { rendezVousId: rendezvousId });
+  }
+
+
   addRendezVous(rendezVous: any): Observable<any> {
     return this.http.post(this.apiUrl, rendezVous);
   }
@@ -25,6 +32,12 @@ export class RendezvousService {
   getRendezVous(): Observable<any> {
     return this.http.get(this.apiUrl, { headers: this.getHeaders() });
   }
+
+
+  getTypesVehicule(): Observable<{ typesVehicules: any[] }> {
+    return this.http.get<{ typesVehicules: any[] }>(`${this.apitype}/options`);
+  }
+
 
 
 getMecaniciens(): Observable<any[]> {
@@ -48,11 +61,9 @@ updateDateRendezVous(id: string, newDate: string): Observable<any> {
 }
 
 
-getRendezVousByClientId(clientId: string, headers: HttpHeaders): Observable<any> {
-  return this.http.get(`${this.apiUrl}/rendezvous/${clientId}`, { headers });
+getRendezVousByClient(clientId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/${clientId}/client`);
 }
-
-
 
 assignMecanicienToRendezvous(id: string, mecanicienId: string) {
   return this.http.put(`${this.apiUrl}/${id}/ajoutmecanicien`, { mecanicienId },{ headers: this.getHeaders() });

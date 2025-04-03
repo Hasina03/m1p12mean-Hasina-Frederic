@@ -22,10 +22,14 @@ import { LayoutComponent } from './components/layouts/mecanicien-layout/layout/l
 import { DevisSelectionComponent } from './components/client/devis-selection/devis-selection.component';
 import { DevisAffichageComponent } from './components/client/devis-affichage/devis-affichage.component';
 import { AuthGuard } from './auth.guard';
+import { ConfirmationemailComponent } from './components/email/confirmationemail/confirmationemail.component';
+import { ResetPasswordComponent } from './components/email/reset-password/reset-password.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'rendezvous', component:RendezVousComponent  },
+    { path: 'confirmationemail', component:ConfirmationemailComponent  },
+    { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'users', component: InscriptionComponent },
     { path: '', redirectTo: 'acceuil', pathMatch: 'full' },
 
@@ -34,7 +38,7 @@ export const routes: Routes = [
         component: DefaultLayoutComponent,
         children: [
           { path: 'acceuil', component: AccueilComponent },
-          { path: 'listepiece', component:ListepieceComponent  },
+          { path: 'listepiece', component:ListepieceComponent , canActivate: [AuthGuard], },
           { path: 'prestation/:id', component: PrestationDetailComponent },
           { path: 'rendez-vous/:id/avis', component: AvisComponent },
           { path: 'rendez-vous/:id/suivi-prestations', component: SuiviPrestationComponent },
