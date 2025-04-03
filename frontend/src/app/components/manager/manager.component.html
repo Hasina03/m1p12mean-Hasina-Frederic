@@ -13,13 +13,13 @@
         </a>
       </li>
       <li class="mb-1 group">
-        <a routerLink="/listerendezvous" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+        <a routerLink="/manager/listerendezvous" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
           <i class="ri-home-2-line mr-3 text-lg"></i>
           <span class="text-sm">Liste rendezvous</span>
         </a>
       </li>
       <li class="mb-1 group">
-        <a routerLink="/listeUtilisateur" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+        <a routerLink="/manager/listeUtilisateur" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
           <i class="ri-home-2-line mr-3 text-lg"></i>
           <span class="text-sm">Liste Utilisateurs</span>
         </a>
@@ -33,12 +33,12 @@
         <!-- Sous-menu pour le Stock -->
         <ul *ngIf="isStockMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
           <li class="mb-1 group">
-            <a routerLink="/listepiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+            <a routerLink="/manager/listepiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
               <span class="text-sm">Liste des pièces</span>
             </a>
           </li>
           <li>
-            <a routerLink="/ajoutpiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+            <a routerLink="/manager/ajoutpiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
               <span class="text-sm">Ajout pièce</span>
             </a>
           </li>
@@ -75,12 +75,12 @@
         <!-- Sous-menu pour les Véhicules -->
         <ul *ngIf="isMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
           <li class="mb-1 group">
-            <a routerLink="/listevehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+            <a routerLink="/manager/listevehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
               <span class="text-sm">Liste des véhicules</span>
             </a>
           </li>
           <li>
-            <a routerLink="/ajoutvehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+            <a routerLink="/manager/ajoutvehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
               <span class="text-sm">Ajout véhicule</span>
             </a>
           </li>

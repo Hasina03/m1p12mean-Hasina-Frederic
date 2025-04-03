@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { DefaultLayoutService } from '../../../services/layouts/default-layout/default-layout.service';
+import { AuthService } from '../../../services/authentification/auth.service';
 
 @Component({
   selector: 'app-default-layout',
@@ -14,7 +15,7 @@ export class DefaultLayoutComponent implements OnInit {
   prestations: any[] = [];
   isDropdownOpen = false;
 
-  constructor(private defaultLayoutService: DefaultLayoutService) {}
+  constructor(private defaultLayoutService: DefaultLayoutService,private authService: AuthService,private router: Router) {}
 
   ngOnInit(): void {
     this.defaultLayoutService.getPrestations().subscribe(data => {
@@ -24,5 +25,18 @@ export class DefaultLayoutComponent implements OnInit {
       }));
     });
   }
+
+  checkAuth() {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+     console.log(token);
+      console.log("Utilisateur authentifié, redirection vers Mes rendez-vous");
+      this.router.navigate(['/listepiece']);
+    } else {
+      console.log("Utilisateur NON authentifié, redirection vers Login");
+      this.router.navigate(['/login']);
+    }}
+
 
 }

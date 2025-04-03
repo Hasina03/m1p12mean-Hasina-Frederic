@@ -7,27 +7,27 @@ import { VehiculeService } from '../../../services/vehicule/vehicule.service';
 @Component({
   selector: 'app-piece',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './piece.component.html',
   styleUrl: './piece.component.css'
 })
 export class PieceComponent {
   pieces: any[] = [];
-  newPiece = { nom: '', types: [{ prix: 0, vehicule: '' }] };
   vehicules: any[] = [];
+  newPiece = {
+    nom: '',
+    variantes: [{ prix: 0, type_vehicule: '' }]  // Adaptation du format
+  };
   errorMessage: string = '';
-
-
   messageSuccess = '';
   messageError = '';
 
-  constructor(private stockpieceService: StockpieceService,private vehiculeservice:VehiculeService) {}
+  constructor(private stockpieceService: StockpieceService, private vehiculeService: VehiculeService) {}
 
   ngOnInit(): void {
     this.getPieces();
     this.getVehicules();
   }
-
 
   getPieces(): void {
     this.stockpieceService.getpiece().subscribe(
@@ -40,10 +40,11 @@ export class PieceComponent {
       }
     );
   }
+
   getVehicules(): void {
-    this.vehiculeservice.getvehicule().subscribe(
+    this.vehiculeService.getvehicule().subscribe(
       (data) => {
-        console.log('Véhicules récupérés:', data);  // Affiche les véhicules récupérés
+        console.log('Véhicules récupérés:', data);
         this.vehicules = data;
       },
       (error) => {
@@ -53,30 +54,31 @@ export class PieceComponent {
     );
   }
 
-
-
   addPiece(): void {
+    if (!this.newPiece.nom || this.newPiece.variantes.some(v => !v.type_vehicule || v.prix <= 0)) {
+      this.messageError = 'Veuillez remplir tous les champs correctement ❌';
+      return;
+    }
+
     this.stockpieceService.addpiece(this.newPiece).subscribe(
-      (response) => {
-        this.messageSuccess = 'Piece ajouté avec succès ✅';
+      () => {
+        this.messageSuccess = 'Pièce ajoutée avec succès ✅';
         this.messageError = '';
         this.getPieces();
-        this.newPiece = { nom: '', types: [{ prix: 0, vehicule: '' }] };  // Réinitialiser le formulaire
+        this.newPiece = { nom: '', variantes: [{ prix: 0, type_vehicule: '' }] };  // Réinitialiser le formulaire
       },
       (error) => {
-        this.messageError = 'Erreur lors de l\'ajout du piece ❌';
+        this.messageError = 'Erreur lors de l\'ajout de la pièce ❌';
         this.messageSuccess = '';
+        console.error(error);
       }
     );
   }
 
-
-  // Méthode pour supprimer une pièce
   deletePiece(id: string): void {
     this.stockpieceService.deletepiece(id).subscribe(
-      (response) => {
-        console.log('Pièce supprimée:', response);
-        this.getPieces();  // Rafraîchir la liste des pièces
+      () => {
+        this.getPieces();
       },
       (error) => {
         console.error('Erreur lors de la suppression de la pièce', error);

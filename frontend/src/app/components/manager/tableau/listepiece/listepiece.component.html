@@ -32,7 +32,7 @@
             <th class="p-4 text-base font-normal text-slate-500 text-center">Nom</th>
             <th class="p-4 text-base font-normal text-slate-500 text-center">Prix</th>
             <th class="p-4 text-base font-normal text-slate-500 text-center">Véhicule</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Type moteur</th>
+            <th class="p-4 text-base font-normal text-slate-500 text-center">Type carburant</th>
             <th class="p-4 text-base font-normal text-slate-500 text-center">Actions</th>
           </tr>
         </thead>
@@ -40,8 +40,8 @@
           <tr *ngFor="let piece of filteredPieces | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-slate-200 hover:bg-slate-100">
             <td class="p-4 text-base text-slate-700 text-center">{{ piece.nom }}</td>
             <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.prix}} Ar</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.vehicule?.marque }} {{ piece.types[0]?.vehicule?.modele }} ({{ piece.types[0]?.vehicule?.annee }})</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.vehicule?.type_moteur }}</td>
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.type_vehicule?.marque }} {{ piece.types[0]?.vehicule?.modele }} ({{ piece.types[0]?.vehicule?.annee }})</td>
+            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.type_vehicule?.type_moteur }}</td>
             <td class="p-4 text-base text-slate-700 text-center flex justify-center space-x-2">
               <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs" (click)="deletePiece(piece._id)">Supprimer</button>
             </td>

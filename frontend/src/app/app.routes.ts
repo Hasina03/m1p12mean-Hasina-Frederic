@@ -21,6 +21,7 @@ import { ListepieceComponent } from './components/manager/tableau/listepiece/lis
 import { LayoutComponent } from './components/layouts/mecanicien-layout/layout/layout.component';
 import { DevisSelectionComponent } from './components/client/devis-selection/devis-selection.component';
 import { DevisAffichageComponent } from './components/client/devis-affichage/devis-affichage.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -33,6 +34,7 @@ export const routes: Routes = [
         component: DefaultLayoutComponent,
         children: [
           { path: 'acceuil', component: AccueilComponent },
+          { path: 'listepiece', component:ListepieceComponent  },
           { path: 'prestation/:id', component: PrestationDetailComponent },
           { path: 'rendez-vous/:id/avis', component: AvisComponent },
           { path: 'rendez-vous/:id/suivi-prestations', component: SuiviPrestationComponent },
@@ -50,7 +52,8 @@ export const routes: Routes = [
     // { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
 
 
-    { path: 'rendezvous', component:RendezVousComponent  },
+    { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
+
     {
       path: 'manager',
       component: ManagerComponent,
@@ -60,7 +63,6 @@ export const routes: Routes = [
         { path: 'stockpiece', component:PieceComponent  },
         { path: 'ajoutvehicule', component:VehiculeComponent  },
         { path: 'listevehicule', component:ListevehiculeComponent  },
-        { path: 'listepiece', component:ListepieceComponent  },
         { path: 'ajoutpiece', component:PieceComponent  },
         { path: 'manager/prestations', component: ListePrestationsComponent },
         { path: 'manager/prestations/add', component: FormPrestationComponent },
