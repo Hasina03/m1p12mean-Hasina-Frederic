@@ -14,10 +14,14 @@ import { AuthService } from '../../../services/authentification/auth.service';
 export class DefaultLayoutComponent implements OnInit {
   prestations: any[] = [];
   isDropdownOpen = false;
+  isAuthenticated: boolean = false;
 
   constructor(private defaultLayoutService: DefaultLayoutService,private authService: AuthService,private router: Router) {}
 
   ngOnInit(): void {
+
+    const token = localStorage.getItem('token');
+    this.isAuthenticated = !!token;
     this.defaultLayoutService.getPrestations().subscribe(data => {
       this.prestations = data.map((prestation: any) => ({
         _id: prestation._id,
@@ -26,17 +30,16 @@ export class DefaultLayoutComponent implements OnInit {
     });
   }
 
+
   checkAuth() {
     const token = localStorage.getItem('token');
-
+    console.log(token);
     if (token) {
-     console.log(token);
-      console.log("Utilisateur authentifié, redirection vers Mes rendez-vous");
       this.router.navigate(['/listepiece']);
     } else {
-      console.log("Utilisateur NON authentifié, redirection vers Login");
-      this.router.navigate(['/login']);
-    }}
+      this.router.navigate(['/login']); 
+    }
+  }
 
 
 }
