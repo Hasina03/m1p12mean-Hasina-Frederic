@@ -32,7 +32,7 @@ export const routes: Routes = [
         component: DefaultLayoutComponent,
         children: [
           { path: 'acceuil', component: AccueilComponent },
-          { path: 'listepiece', component:ListepieceComponent  },
+          { path: 'listepiece', component:ListepieceComponent , canActivate: [AuthGuard], },
           { path: 'prestation/:id', component: PrestationDetailComponent },
           { path: 'rendez-vous/:id/avis', component: AvisComponent },
           { path: 'rendez-vous/:id/suivi-prestations', component: SuiviPrestationComponent }

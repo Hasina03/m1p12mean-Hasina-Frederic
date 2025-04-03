@@ -48,11 +48,9 @@ updateDateRendezVous(id: string, newDate: string): Observable<any> {
 }
 
 
-getRendezVousByClientId(clientId: string, headers: HttpHeaders): Observable<any> {
-  return this.http.get(`${this.apiUrl}/rendezvous/${clientId}`, { headers });
+getRendezVousByClient(clientId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/${clientId}/client`);
 }
-
-
 
 assignMecanicienToRendezvous(id: string, mecanicienId: string) {
   return this.http.put(`${this.apiUrl}/${id}/ajoutmecanicien`, { mecanicienId },{ headers: this.getHeaders() });
