@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { DefaultLayoutService } from '../../../services/layouts/default-layout/default-layout.service';
 import { AuthService } from '../../../services/authentification/auth.service';
@@ -14,9 +14,10 @@ import { AuthService } from '../../../services/authentification/auth.service';
 export class DefaultLayoutComponent implements OnInit {
   prestations: any[] = [];
   isDropdownOpen = false;
-  isAuthenticated: boolean = false;
+  isAuthenticated = false;
 
-  constructor(private defaultLayoutService: DefaultLayoutService,private authService: AuthService,private router: Router) {}
+
+  constructor(private defaultLayoutService: DefaultLayoutService,private authService: AuthService,private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
 
@@ -28,6 +29,10 @@ export class DefaultLayoutComponent implements OnInit {
         nom: prestation.nom
       }));
     });
+
+    this.checkAuth2(); // Vérifie l'authentification au chargement
+    // Écoute les changements du localStorage
+    window.addEventListener('storage', this.checkAuth2.bind(this));
   }
 
 
@@ -41,5 +46,14 @@ export class DefaultLayoutComponent implements OnInit {
     }
   }
 
+    checkAuth2() {
+      this.isAuthenticated = !!localStorage.getItem('token'); // true si un token existe, sinon false
+    }
+
+    logout(): void {
+      localStorage.removeItem('token');
+      this.checkAuth2(); // Met à jour immédiatement isAuthenticated
+      this.router.navigate(['/']);
+    }
 
 }
