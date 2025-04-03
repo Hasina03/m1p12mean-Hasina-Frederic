@@ -35,9 +35,18 @@
 
         <!-- Auth buttons -->
         <div class="hidden lg:flex">
-          <a routerLink="/login" class="px-4 py-2 text-white bg-gray-600 rounded hover:bg-gray-700">Se connecter</a>
-          <a routerLink="/users" class="ml-4 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">S'inscrire</a>
+          <ng-container *ngIf="isAuthenticated; else guestButtons">
+            <button (click)="logout()" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">Se déconnecter</button>
+          </ng-container>
+
+          <ng-template #guestButtons>
+            <a routerLink="/login" class="px-4 py-2 text-white bg-gray-600 rounded hover:bg-gray-700">Se connecter</a>
+            <a routerLink="/users" class="ml-4 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">S'inscrire</a>
+          </ng-template>
         </div>
+
+
+
       </nav>
 
       <!-- Contenu principal -->
@@ -47,6 +56,6 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-white text-center p-4 mt-4">
       <p>© 2025 Mon Garage - Tous droits réservés</p>
-      <p class="text-sm mt-2">Réalisé par : RAZAFIMANANTSOA Hasina &Rakotonirina Lala Frédéric</p>
+      <p class="text-sm mt-2">Réalisé par : RAZAFIMANANTSOA Hasina & Rakotonirina Lala Frédéric</p>
     </footer>
   </div>
