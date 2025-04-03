@@ -9,7 +9,9 @@
         <!-- Menu -->
         <div class="hidden lg:flex lg:items-center">
           <a routerLink="/acceuil" class="px-4 py-2 text-gray-600 hover:text-gray-900">Accueil</a>
-          <a (click)="checkAuth()" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Mes rendez-vous</a>
+          <a (click)="checkAuth()" *ngIf="!isAuthenticated" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Se connecter</a>
+      <a (click)="checkAuth()" *ngIf="isAuthenticated" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Mes rendez-vous</a>
+
 
 
           <!-- Dropdown Nos Prestations -->

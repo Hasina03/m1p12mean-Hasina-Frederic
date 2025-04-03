@@ -1,58 +1,113 @@
-<div class="max-w-[1200px] mx-auto">
-  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border min-h-[400px]">
-    <div class="flex items-center justify-between p-4">
-      <h2 class="text-lg font-semibold text-slate-700">Liste des pièces</h2>
-      <input
-        type="text"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearchTermChange()"
-        placeholder="Rechercher par nom de pièce..."
-        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
-      />
-      <!-- Champ pour rechercher par véhicule -->
-      <input
-        type="text"
-        [(ngModel)]="vehicleSearchTerm"
-        (ngModelChange)="onSearchTermChange()"
-        placeholder="Rechercher par véhicule (Marque ou Modèle)"
-        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
-      />
-      <!-- Sélecteur pour le type de moteur -->
-      <select [(ngModel)]="engineSearchTerm" (ngModelChange)="onSearchTermChange()" class="px-4 py-2 border border-gray-300 rounded-md">
-        <option value="">Sélectionner type moteur</option>
-        <option value="essence">Essence</option>
-        <option value="diesel">Diesel</option>
-      </select>
+<div class="p-6 bg-white shadow-lg rounded-lg h-[600px]">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Liste des Rendez-vous</h2>
+  <div class="flex justify-between items-center mb-4">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchTermChange()"
+      placeholder="Rechercher par nom/statut..."
+      class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
+    />
+  </div>
+  <div class="overflow-auto h-[calc(100%_-_100px)]">
+    <table class="w-full border border-gray-300 rounded-lg overflow-hidden shadow-md">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr>
+          <th class="px-4 py-3 border">Nom</th>
+          <th class="px-4 py-3 border">Date</th>
+          <th class="px-4 py-3 border">Prestation</th>
+          <th class="px-4 py-3 border">Status</th>
+          <th class="px-4 py-3 border">Mécanicien</th>
+          <th class="px-4 py-3 border">Facture</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600">
+        <tr class="hover:bg-gray-100 transition" *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
+          <td class="px-4 py-3 border whitespace-nowrap">
+            {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
+          </td>
+          <td class="px-4 py-3 border">{{ rendezvous.date_rdv | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="px-4 py-3 border">
+            <ul class="list-disc pl-4">
+              <li *ngFor="let prestation of rendezvous.prestations">
+                {{ prestation.prestation_id?.nom }}
+              </li>
+            </ul>
+          </td>
+          <td class="px-4 py-3 border">{{ rendezvous.statut }}</td>
+          <td class="px-4 py-3 border whitespace-nowrap">
+            {{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}
+          </td>
+          <td class="px-4 py-3 border text-center">
+            <button (click)="openModal(rendezvous._id)"
+                    class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition">
+              Voir Détails
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="flex items-center justify-between p-3">
+    <p class="block text-sm text-slate-500">
+      Page {{ page }} de {{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}
+    </p>
+    <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+  </div>
+</div>
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg max-h-[80vh] overflow-auto">
+    <div class="flex justify-between items-center">
+      <button type="button" class="text-gray-500 ml-auto" (click)="closeModal()">
+        <span class="text-2xl">&times;</span>
+      </button>
     </div>
-
-    <div class="p-0 overflow-scroll h-[500px]">
-      <table class="w-full mt-4 text-left table-auto min-w-max">
-        <thead>
-          <tr class="bg-slate-50 border-y border-slate-200">
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Nom</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Prix</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Véhicule</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Type carburant</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Actions</th>
+    <div class="mt-4">
+      <h5 class="text-xl font-semibold mt-6">Détails de la Facture</h5>
+      <table class="w-full table-auto border-collapse border border-gray-300 mt-4">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 text-left">Prestation</th>
+            <th class="px-4 py-2 text-left">Description</th>
+            <th class="px-4 py-2 text-left">Prix</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let piece of filteredPieces | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-slate-200 hover:bg-slate-100">
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.nom }}</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.prix}} Ar</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.type_vehicule?.marque }} {{ piece.types[0]?.vehicule?.modele }} ({{ piece.types[0]?.vehicule?.annee }})</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ piece.types[0]?.type_vehicule?.type_moteur }}</td>
-            <td class="p-4 text-base text-slate-700 text-center flex justify-center space-x-2">
-              <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs" (click)="deletePiece(piece._id)">Supprimer</button>
-            </td>
+          <tr *ngFor="let prestation of selectedRendezvous?.prestation">
+            <td class="border px-4 py-2">{{ prestation.prestation_id?.nom }}</td>
+            <td class="border px-4 py-2">{{ prestation.prestation_id?.description }}</td>
+            <td class="border px-4 py-2">{{ prestation.prestation_id?.prix_main_oeuvre }} Ar</td>
           </tr>
         </tbody>
       </table>
-    </div>
 
-    <div class="flex items-center justify-between p-3">
-      <p class="block text-base text-slate-500">Page {{ page }} de {{ (pieces.length / itemsPerPage) | number: '1.0-0' }}</p>
-      <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+      <h5 class="text-xl font-semibold mt-6">Pièces</h5>
+      <table class="w-full table-auto border-collapse border border-gray-300 mt-4">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 text-left">Nom de la Pièce</th>
+            <th class="px-4 py-2 text-left">Prix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let piece of selectedRendezvous?.pieces">
+            <td class="border px-4 py-2">{{ piece.nom }}</td>
+            <td class="border px-4 py-2">{{ piece.prix }} Ar</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flex justify-between items-center mt-6">
+        <h5 class="text-xl font-semibold">Total de la Facture</h5>
+        <div class="flex items-center">
+          <p class="text-xl font-semibold mr-4">{{ selectedRendezvous?.total  }} Ar</p>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition" (click)="exportPdf()">
+            Exporter PDF
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+

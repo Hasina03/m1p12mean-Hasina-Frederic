@@ -16,9 +16,13 @@ export class DefaultLayoutComponent implements OnInit {
   isDropdownOpen = false;
   isAuthenticated = false;
 
+
   constructor(private defaultLayoutService: DefaultLayoutService,private authService: AuthService,private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+
+    const token = localStorage.getItem('token');
+    this.isAuthenticated = !!token;
     this.defaultLayoutService.getPrestations().subscribe(data => {
       this.prestations = data.map((prestation: any) => ({
         _id: prestation._id,
@@ -31,17 +35,16 @@ export class DefaultLayoutComponent implements OnInit {
     window.addEventListener('storage', this.checkAuth2.bind(this));
   }
 
+
   checkAuth() {
     const token = localStorage.getItem('token');
-
+    console.log(token);
     if (token) {
-     console.log(token);
-      console.log("Utilisateur authentifié, redirection vers Mes rendez-vous");
       this.router.navigate(['/listepiece']);
     } else {
-      console.log("Utilisateur NON authentifié, redirection vers Login");
-      this.router.navigate(['/login']);
-    }}
+      this.router.navigate(['/login']); 
+    }
+  }
 
     checkAuth2() {
       this.isAuthenticated = !!localStorage.getItem('token'); // true si un token existe, sinon false
