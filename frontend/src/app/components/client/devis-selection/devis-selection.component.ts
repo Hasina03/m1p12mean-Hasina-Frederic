@@ -13,24 +13,21 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './devis-selection.component.css'
 })
 export class DevisSelectionComponent implements OnInit {
-  vehicules: any[] = [];
+  typesVehicules: any[] = [];
   prestations: any[] = [];
-  selectedVehiculeId: string | null = null;
+  selectedTypeVehicule: string = '';
   selectedPrestations: string[] = [];
 
   constructor(private devisService: DevisService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.devisService.getVehicules().subscribe(data => {
-      this.vehicules = data;
-    });
-
-    this.devisService.getPrestations().subscribe(data => {
-      this.prestations = data;
+  ngOnInit() {
+    this.devisService.getOptions().subscribe(response => {
+      this.typesVehicules = response.typesVehicules;
+      this.prestations = response.prestations;
     });
   }
 
-  togglePrestation(prestationId: string): void {
+  togglePrestation(prestationId: string) {
     if (this.selectedPrestations.includes(prestationId)) {
       this.selectedPrestations = this.selectedPrestations.filter(id => id !== prestationId);
     } else {
@@ -38,11 +35,14 @@ export class DevisSelectionComponent implements OnInit {
     }
   }
 
-  genererDevis(): void {
-    if (this.selectedVehiculeId && this.selectedPrestations.length > 0) {
-      this.router.navigate(['/devis-affichage'], {
-        queryParams: { vehiculeId: this.selectedVehiculeId, prestations: this.selectedPrestations.join(',') }
-      });
+  generateDevis() {
+    if (!this.selectedTypeVehicule || this.selectedPrestations.length === 0) {
+      alert("Veuillez sélectionner un type de véhicule et au moins une prestation.");
+      return;
     }
+
+    this.router.navigate(['/devis-affichage'], {
+      queryParams: { typeVehiculeId: this.selectedTypeVehicule, prestationIds: this.selectedPrestations }
+    });
   }
 }
