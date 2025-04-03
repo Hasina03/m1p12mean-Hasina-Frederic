@@ -36,12 +36,20 @@ this.loadUtilisateur());
           const userDetails = this.utilisateurservice.getUserIdFromToken();
           console.log('Détails de l\'utilisateur:', userDetails);
           if (userDetails) {
-            if (userDetails.role === 'manager') {
-              this.router.navigate(['/manager']);
-            }else if(userDetails.role === 'client') {
-              this.router.navigate(['/rendezvous']);
+            switch (userDetails.role) {
+              case 'manager':
+                this.router.navigate(['/manager']);
+                break;
+              case 'mecanicien':
+                this.router.navigate(['/mecanicien']);
+                break;
+              case 'client':
+                this.router.navigate(['/acceuil']);
+                break;
+              default:
+                this.router.navigate(['/login']);
             }
-          } else{
+          } else {
             this.router.navigate(['/login']);
           }
         } else {
@@ -54,6 +62,17 @@ this.loadUtilisateur());
       }
     );
   }
+  quickLogin(role: 'manager' | 'mecanicien' | 'client'): void {
+    const testUsers: Record<'manager' | 'mecanicien' | 'client', { email: string; mdp: string }> = {
+      manager: { email: 'haingo@gmail.com', mdp: 'motdepass' },
+      mecanicien: { email: 'faneva@gmail.com', mdp: 'motdepass' },
+      client: { email: 'teddy@gmail.com', mdp: 'motdepass' }
+    };
+
+    this.user = testUsers[role];
+    this.onLogin(); // Déclenche la connexion automatique
+  }
+
 
 }
 

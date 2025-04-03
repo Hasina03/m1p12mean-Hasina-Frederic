@@ -14,7 +14,7 @@ export class RendezvousService {
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`, 
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
@@ -47,6 +47,10 @@ updateDateRendezVous(id: string, newDate: string): Observable<any> {
   return this.http.put(`${this.apiUrl}/${id}/dates`, { newDate: formattedDate }, { headers });
 }
 
+
+getRendezVousByClientId(clientId: string, headers: HttpHeaders): Observable<any> {
+  return this.http.get(`${this.apiUrl}/rendezvous/${clientId}`, { headers });
+}
 
 
 

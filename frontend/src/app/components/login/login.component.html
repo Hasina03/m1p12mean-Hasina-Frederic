@@ -49,6 +49,12 @@
       Vous n'avez pas de compte ?
       <a href="/users" class="text-indigo-600 hover:text-indigo-500 font-medium">Inscrivez-vous</a>
     </div>
+    <div class="mt-6 text-center text-sm text-gray-600">
+      <p>Connexion rapide :</p>
+      <button (click)="quickLogin('manager')" class="text-indigo-600 hover:text-indigo-500 font-medium mr-2">Manager</button>
+      <button (click)="quickLogin('mecanicien')" class="text-indigo-600 hover:text-indigo-500 font-medium mr-2">Mécanicien</button>
+      <button (click)="quickLogin('client')" class="text-indigo-600 hover:text-indigo-500 font-medium">Client</button>
+    </div>
     <p *ngIf="errorMessage" class="mt-4 text-center text-red-500">{{ errorMessage }}</p>
   </div>
 </div>
