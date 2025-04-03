@@ -1,38 +1,33 @@
-<div class="container mx-auto p-6">
-    <div *ngIf="isLoading" class="text-center text-gray-600">Chargement du devis...</div>
+<div *ngIf="devis" class="max-w-3xl mx-auto bg-white p-6 shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">
+        🛠️ Devis pour un <span class="text-blue-600">{{ devis.typeVehicule }}</span>
+    </h2>
 
-    <div *ngIf="errorMessage" class="text-red-500 text-center">
-      {{ errorMessage }}
+    <div class="mt-4">
+        <h3 class="text-xl font-semibold text-gray-700">Prestations :</h3>
+
+        <div *ngFor="let prestation of devis.prestations" class="mt-4 p-5 border rounded-lg shadow-sm bg-gray-50">
+            <h4 class="text-lg font-semibold text-blue-700">{{ prestation.nom }}</h4>
+            <p class="text-gray-600">💰 Main d'œuvre : <span class="font-medium">{{ prestation.prix_main_oeuvre }} Ar</span></p>
+
+            <h4 class="font-medium mt-2 text-gray-700">🔩 Pièces nécessaires :</h4>
+            <ul *ngIf="prestation.pieces.length > 0; else noPieces" class="list-disc pl-5 text-gray-600">
+                <li *ngFor="let piece of prestation.pieces">
+                    {{ piece.nom }} - <span class="font-medium">{{ piece.prix }} Ar</span>
+                </li>
+            </ul>
+
+            <ng-template #noPieces>
+                <p class="text-red-500">❌ Les pièces à utiliser sont indisponibles dans le garage pour l'instant.</p>
+            </ng-template>
+
+            <p class="text-gray-900 font-bold mt-3 text-lg">💵 Total : <span class="text-green-600">{{ prestation.total_prestation }} Ar</span></p>
+        </div>
     </div>
 
-    <div *ngIf="devis" class="max-w-3xl mx-auto bg-white p-6 shadow-lg rounded-lg">
-      <h2 class="text-2xl font-bold mb-4 text-center">📝 Devis de Réparation</h2>
-
-      <div class="border-b pb-4 mb-4">
-        <p class="text-gray-700"><strong>Modèle du véhicule :</strong> {{ devis.vehicule.nom }}</p>
-      </div>
-
-      <table class="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="border border-gray-300 p-2">Prestation</th>
-            <th class="border border-gray-300 p-2">Main d'œuvre (€)</th>
-            <th class="border border-gray-300 p-2">Pièces (€)</th>
-            <th class="border border-gray-300 p-2">Total (€)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let prestation of devis.prestations" class="text-center">
-            <td class="border border-gray-300 p-2">{{ prestation.nom }}</td>
-            <td class="border border-gray-300 p-2">{{ prestation.prix_main_oeuvre }}</td>
-            <td class="border border-gray-300 p-2">{{ prestation.prix_pieces }}</td>
-            <td class="border border-gray-300 p-2 font-bold">{{ prestation.total }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="mt-6 text-right text-lg font-bold">
-        <p>Total du devis : <span class="text-green-600">{{ devis.total }} €</span></p>
-      </div>
+    <div class="mt-6 p-5 bg-gray-100 border-t rounded-lg shadow-sm">
+        <h3 class="text-xl font-bold text-gray-800">💰 Total du devis :
+            <span class="text-green-600">{{ devis.total }} Ar</span>
+        </h3>
     </div>
-  </div>
+</div>

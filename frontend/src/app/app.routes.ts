@@ -23,7 +23,6 @@ import { DevisSelectionComponent } from './components/client/devis-selection/dev
 import { DevisAffichageComponent } from './components/client/devis-affichage/devis-affichage.component';
 import { AuthGuard } from './auth.guard';
 
-
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'rendezvous', component:RendezVousComponent  },
@@ -39,7 +38,7 @@ export const routes: Routes = [
           { path: 'prestation/:id', component: PrestationDetailComponent },
           { path: 'rendez-vous/:id/avis', component: AvisComponent },
           { path: 'rendez-vous/:id/suivi-prestations', component: SuiviPrestationComponent },
-          { path: 'devis-selection', component: DevisSelectionComponent },
+          { path: 'devis-select', component: DevisSelectionComponent },
           { path: 'devis-affichage', component: DevisAffichageComponent }
         ]
       },

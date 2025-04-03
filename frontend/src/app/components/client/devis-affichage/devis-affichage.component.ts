@@ -11,38 +11,25 @@ import { CommonModule } from '@angular/common';
   styleUrl: './devis-affichage.component.css'
 })
 export class DevisAffichageComponent implements OnInit {
-  vehiculeId: string = '';
-  prestationsIds: string[] = [];
   devis: any = null;
-  isLoading: boolean = true;
-  errorMessage: string = '';
 
   constructor(private route: ActivatedRoute, private devisService: DevisService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.vehiculeId = params['vehiculeId'];
-      this.prestationsIds = params['prestationsIds'] ? params['prestationsIds'].split(',') : [];
+      const typeVehiculeId = params['typeVehiculeId'];
 
-      if (this.vehiculeId && this.prestationsIds.length > 0) {
-        this.fetchDevis();
-      } else {
-        this.errorMessage = "Données manquantes pour générer le devis.";
-        this.isLoading = false;
+      // Vérifier si prestationIds est un tableau ou une chaîne unique
+      let prestationIds: string[] = [];
+      if (Array.isArray(params['prestationIds'])) {
+        prestationIds = params['prestationIds'];
+      } else if (params['prestationIds']) {
+        prestationIds = [params['prestationIds']];
       }
-    });
-  }
 
-  fetchDevis(): void {
-    this.devisService.getDevis(this.vehiculeId, this.prestationsIds).subscribe({
-      next: (data) => {
-        this.devis = data;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.errorMessage = "Erreur lors de la récupération du devis.";
-        this.isLoading = false;
-      }
+      this.devisService.generateDevis({ typeVehiculeId, prestationIds }).subscribe(response => {
+        this.devis = response;
+      });
     });
   }
 }

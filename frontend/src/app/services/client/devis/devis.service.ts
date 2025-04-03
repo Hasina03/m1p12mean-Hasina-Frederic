@@ -11,19 +11,11 @@ export class DevisService {
 
   constructor(private http: HttpClient) {}
 
-  getDevis(vehiculeId: string, prestationsIds: string[]): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/devis`, { vehiculeId, prestationsIds });
+  getOptions(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/options`);
   }
 
-  genererDevis(prestations: string[], typeVehiculeId: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/generer`, { prestations, typeVehiculeId });
-  }
-
-  getVehicules(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/vehicules`);
-  }
-
-  getPrestations(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/prestations`);
+  generateDevis(data: { typeVehiculeId: string, prestationIds: string[] }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/generer`, data);
   }
 }
