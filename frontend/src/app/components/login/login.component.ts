@@ -70,7 +70,7 @@ this.loadUtilisateur());
     };
 
     this.user = testUsers[role];
-    this.onLogin(); // Déclenche la connexion automatique
+    this.onLogin(); 
   }
 
 

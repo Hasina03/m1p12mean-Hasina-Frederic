@@ -31,23 +31,19 @@
             class="peer block w-full appearance-none border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
             required>
             <option value="" disabled selected>Choisir le type de véhicule</option>
-            <option value="voiture_de_plaisir">Voiture de plaisir</option>
-            <option value="camion">Camion</option>
-            <option value="utilitaire">Utilitaire</option>
-            <option value="moto">Moto</option>
-            <option value="suv">SUV</option>
+            <option *ngFor="let type of typesVehicule" [value]="type._id">{{ type.nom }}</option>
             <!-- Ajoutez d'autres options si nécessaire -->
           </select>
         </div>
         <div class="relative z-0">
-          <label for="type_moteur" class="text-lg text-gray-500">Type moteur</label>
+          <label for="type_moteur" class="text-lg text-gray-500">Type carburant</label>
           <select
             id="type_moteur"
             [(ngModel)]="rendezVous.vehicule_id.type_moteur"
             name="type"
             class="peer block w-full appearance-none border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
             required>
-            <option value="" disabled selected>Choisir le type de moteur</option>
+            <option value="" disabled selected>Choisir le type de carburant</option>
             <option value="essence">Essence</option>
             <option value="diesel">Diesel</option>
           </select>

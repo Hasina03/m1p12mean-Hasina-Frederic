@@ -48,11 +48,11 @@
           </button>
         </td>
         <td class="px-4 py-3 border text-center">
-          <button class="bg-gray-500 text-white px-3 py-1 rounded-md" (click)="updatestatus(rendezvous._id)">Valider</button>
+          <button class="bg-blue-500 text-white px-3 py-1 rounded-md" (click)="updatestatus(rendezvous._id)">Valider</button>
           <button class="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600 transition"
           (click)="openReporterModal(rendezvous._id)">Reporter</button>
           <button (click)="openMecanicienModal(rendezvous)"
-          class="bg-gray-500 text-white px-1 py-1 rounded ml-2 mt-2 transition">
+          class="bg-blue-500 text-white px-1 py-1 rounded ml-2 mt-2 transition">
             + Mécanicien
           </button>
         </td>
@@ -98,10 +98,6 @@
           <tr>
             <td class="border px-4 py-2"><strong>Année</strong></td>
             <td class="border px-4 py-2">{{ selectedVehicule?.annee }}</td>
-          </tr>
-          <tr>
-            <td class="border px-4 py-2"><strong>Type</strong></td>
-            <td class="border px-4 py-2">{{ selectedVehicule?.type }}</td>
           </tr>
           <tr>
             <td class="border px-4 py-2"><strong>Type_moteur</strong></td>

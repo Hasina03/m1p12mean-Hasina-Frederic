@@ -31,17 +31,32 @@ export class RendezVousComponent {
 
   messageSuccess = '';
   messageError = '';
+  typesVehicule: any[] = [];
 
   constructor(private rendezVousService: RendezvousService,private utilisateurservice:UtilisateurService,private prestationService:ListprestationService) {}
   ngOnInit() {
     const clientId  = this.utilisateurservice.getUserIdFromToken();
     if (clientId) {
+      this.loadTypesVehicule();
       this.rendezVous.client_id = clientId?.id;
     } else {
       console.error("Erreur : Impossible de récupérer l'ID du client");
     }
     this.loadPrestations();
   }
+
+  loadTypesVehicule() {
+    this.rendezVousService.getTypesVehicule().subscribe(
+      (data) => {
+        console.log('Réponse API:', data);
+        this.typesVehicule = data.typesVehicules;
+      },
+      (error) => {
+        console.error('Erreur lors du chargement des types de véhicules', error);
+      }
+    );
+  }
+
 
   loadPrestations() {
     this.prestationService.getprestation().subscribe(
@@ -68,6 +83,17 @@ export class RendezVousComponent {
 
 
   onSubmit() {
+
+    const dateRdv = new Date(this.rendezVous.date_rdv);
+    const currentDate = new Date();
+
+    // Comparer la date du rendez-vous avec la date actuelle
+    if (dateRdv < currentDate) {
+      // Si la date du rendez-vous est antérieure à la date actuelle, afficher une erreur
+      this.messageError = 'La date du rendez-vous ne peut pas être dans le passé ❌';
+      this.messageSuccess = '';
+      return; // Empêcher l'envoi du formulaire
+    }
     this.rendezVousService.addRendezVous(this.rendezVous).subscribe(
       response => {
         this.messageSuccess = 'Rendez-vous ajouté avec succès ✅';
