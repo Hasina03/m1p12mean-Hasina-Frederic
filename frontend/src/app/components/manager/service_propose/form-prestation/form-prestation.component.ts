@@ -23,6 +23,12 @@ export class FormPrestationComponent implements OnInit {
   isEditing: boolean = false;
   prestationId: string | null = null;
 
+  showModal = false;
+  newProcessus: any = {
+    nom_etape: '',
+    pieces_possibles: []
+  };
+
   constructor(
     private prestationService: PrestationService,
     private route: ActivatedRoute,
@@ -31,32 +37,43 @@ export class FormPrestationComponent implements OnInit {
 
   ngOnInit(): void {
     this.prestationId = this.route.snapshot.paramMap.get('id');
-
-    // Chargement des données si édition
     if (this.prestationId) {
       this.isEditing = true;
       this.prestationService.getPrestationById(this.prestationId).subscribe((data) => {
         this.prestation = data;
-        // Vérifie que chaque processus a bien une propriété pieces_possibles
-        this.prestation.processus = this.prestation.processus.map((p: any) => ({
-          ...p,
-          pieces_possibles: p.pieces_possibles || []
-        }));
       });
     }
 
-    // Chargement des pièces
     this.prestationService.getPieces().subscribe((data) => {
       this.pieces = data;
     });
   }
 
-  addProcessus() {
-    this.prestation.processus.push({
-      ordre: this.prestation.processus.length + 1,
+  openModal() {
+    this.newProcessus = {
       nom_etape: '',
       pieces_possibles: []
-    });
+    };
+    this.showModal = true;
+  }
+
+  togglePieceSelection(pieceId: string) {
+    const index = this.newProcessus.pieces_possibles.indexOf(pieceId);
+    if (index === -1) {
+      this.newProcessus.pieces_possibles.push(pieceId);
+    } else {
+      this.newProcessus.pieces_possibles.splice(index, 1);
+    }
+  }
+
+  confirmAddProcessus() {
+    const newProc = {
+      ordre: this.prestation.processus.length + 1,
+      nom_etape: this.newProcessus.nom_etape,
+      pieces_possibles: [...this.newProcessus.pieces_possibles]
+    };
+    this.prestation.processus.push(newProc);
+    this.showModal = false;
   }
 
   removeProcessus(index: number) {

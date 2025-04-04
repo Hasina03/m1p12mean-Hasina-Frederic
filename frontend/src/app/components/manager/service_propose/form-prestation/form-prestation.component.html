@@ -1,56 +1,77 @@
-<div class="max-w-5xl mx-auto p-6 bg-white shadow-xl rounded-lg mt-6">
-  <h2 class="text-2xl font-semibold mb-6 text-center">
-    {{ isEditing ? 'Modifier une Prestation' : 'Créer une Prestation' }}
-  </h2>
+<div class="max-w-5xl mx-auto px-6 py-8 bg-white rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-6">{{ isEditing ? 'Modifier' : 'Créer' }} une Prestation</h2>
 
   <form (ngSubmit)="submitForm()" class="space-y-6">
     <div>
       <label class="block font-medium">Nom</label>
-      <input type="text" class="w-full border p-2 rounded" [(ngModel)]="prestation.nom" name="nom" required />
+      <input type="text" [(ngModel)]="prestation.nom" name="nom" class="w-full mt-1 p-2 border rounded" required>
     </div>
 
     <div>
       <label class="block font-medium">Description</label>
-      <textarea class="w-full border p-2 rounded" [(ngModel)]="prestation.description" name="description" required></textarea>
+      <textarea [(ngModel)]="prestation.description" name="description" class="w-full mt-1 p-2 border rounded"></textarea>
     </div>
 
     <div>
       <label class="block font-medium">Prix Main d'œuvre</label>
-      <input type="number" class="w-full border p-2 rounded" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre" required />
+      <input type="number" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre" class="w-full mt-1 p-2 border rounded" required>
     </div>
 
-    <!-- <h3 class="font-semibold mb-2">Processus {{ i + 1 }}</h3> -->
+    <div class="mt-6">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">Processus</h3>
+        <button type="button" (click)="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Ajouter un processus
+        </button>
+      </div>
 
-    <div *ngFor="let processus of prestation.processus; let i = index" class="p-4 border rounded mb-4">
-      <h3 class="font-semibold mb-2">Processus {{ i + 1 }}</h3>
-      <label class="block text-sm font-semibold mb-1">Nom de l'étape</label>
-      <input type="text" [(ngModel)]="processus.nom_etape" name="nom_etape_{{i}}" class="w-full border rounded p-2 mb-2" />
-
-      <label class="block text-sm font-semibold mb-1">Ordre</label>
-      <input type="number" [(ngModel)]="processus.ordre" name="ordre_{{i}}" class="w-full border rounded p-2 mb-2" />
-
-      <label class="block text-sm font-semibold mb-1">Pièces associées</label>
-      <select
-        [(ngModel)]="processus.pieces_possibles"
-        name="pieces_{{i}}"
-        multiple
-        class="w-full border rounded p-2 mb-2 h-32"
-      >
-        <option *ngFor="let piece of pieces" [value]="piece._id">{{ piece.nom }}</option>
-      </select>
-
-      <button type="button" (click)="removeProcessus(i)" class="text-red-500 hover:underline mt-2">Supprimer ce processus</button>
+      <ul class="space-y-3">
+        <li *ngFor="let p of prestation.processus; let i = index; trackBy: trackByIndex" class="border p-3 rounded">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="font-semibold">Étape {{ i + 1 }}: {{ p.nom_etape }}</p>
+              <p class="text-sm text-gray-600">Pièces liées: {{ p.pieces_possibles.length }}</p>
+            </div>
+            <button type="button" (click)="removeProcessus(i)" class="text-red-500 hover:underline">Supprimer</button>
+          </div>
+        </li>
+      </ul>
     </div>
 
-
-    <div class="flex justify-between">
-      <button type="button" (click)="addProcessus()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-        + Ajouter un processus
-      </button>
-
+    <div class="text-right">
       <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-        {{ isEditing ? 'Mettre à jour' : 'Créer' }}
+        {{ isEditing ? 'Modifier' : 'Créer' }}
       </button>
     </div>
   </form>
+
+  <!-- Modale -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg w-full max-w-xl shadow-lg">
+      <h3 class="text-xl font-semibold mb-4">Ajouter un Processus</h3>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block font-medium">Nom de l'étape</label>
+          <input type="text" [(ngModel)]="newProcessus.nom_etape" name="nom_etape" class="w-full p-2 border rounded" required>
+        </div>
+
+        <div>
+          <label class="block font-medium">Pièces associées</label>
+          <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border rounded p-2">
+            <label *ngFor="let piece of pieces" class="flex items-center space-x-2">
+              <input type="checkbox" [checked]="newProcessus.pieces_possibles.includes(piece._id)"
+                     (change)="togglePieceSelection(piece._id)">
+              <span>{{ piece.nom }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-6 space-x-3">
+        <button (click)="showModal = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Annuler</button>
+        <button (click)="confirmAddProcessus()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Ajouter</button>
+      </div>
+    </div>
+  </div>
 </div>
