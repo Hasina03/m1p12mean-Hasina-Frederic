@@ -55,7 +55,10 @@ export const routes: Routes = [
     // { path: 'manager/prestations', component: ListePrestationsComponent },
     // { path: 'manager/prestations/add', component: FormPrestationComponent },
     // { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
-    { path: 'manager/dashboard', component: DashboardComponent },
+    // { path: 'manager/dashboard', component: DashboardComponent },
+    { path: 'manager/prestations', component: ListePrestationsComponent },
+    { path: 'manager/prestations/add', component: FormPrestationComponent },
+    { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
 
 
     { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
@@ -70,9 +73,10 @@ export const routes: Routes = [
         { path: 'ajoutvehicule', component:VehiculeComponent  },
         { path: 'listevehicule', component:ListevehiculeComponent  },
         { path: 'ajoutpiece', component:PieceComponent  },
-        { path: 'manager/prestations', component: ListePrestationsComponent },
-        { path: 'manager/prestations/add', component: FormPrestationComponent },
-        { path: 'manager/prestations/edit/:id', component: FormPrestationComponent }
+        // { path: 'prestations', component: ListePrestationsComponent },
+        // { path: 'prestations/add', component: FormPrestationComponent },
+        // { path: 'prestations/edit/:id', component: FormPrestationComponent },
+        { path: 'dashboard', component: DashboardComponent },
       ]
   },
   {

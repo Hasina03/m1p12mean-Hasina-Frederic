@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,14 +10,24 @@ export class StatsService {
 
   constructor(private http: HttpClient) {}
 
-  // Récupérer les statistiques générales
-  getGeneralStats(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/general`);
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
   }
 
-  // Récupérer les prestations les plus demandées
+  getGeneralStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/general`, {
+      headers: this.getHeaders()
+    });
+  }
+
   getTopPrestations(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/top-prestations`);
+    return this.http.get<any>(`${this.apiUrl}/top-prestations`, {
+      headers: this.getHeaders()
+    });
   }
 }
 
