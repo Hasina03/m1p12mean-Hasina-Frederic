@@ -52,4 +52,9 @@ export class PrestationDetailComponent implements OnInit {
 
     return Array.from(processusSet);
   }
+
+  getPrixPiecesTotal(prixPieces: { [processus: string]: number }): number {
+    return Object.values(prixPieces).reduce((acc, prix) => acc + (prix || 0), 0);
+  }
+
 }

@@ -10,29 +10,27 @@
         <div class="hidden lg:flex lg:items-center">
           <a routerLink="/acceuil" class="px-4 py-2 text-gray-600 hover:text-gray-900">Accueil</a>
           <a (click)="checkAuth()" *ngIf="!isAuthenticated" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Se connecter</a>
-      <a (click)="checkAuth()" *ngIf="isAuthenticated" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Mes rendez-vous</a>
-
-
+          <a (click)="checkAuth()" *ngIf="isAuthenticated" class="px-4 py-2 text-gray-600 hover:text-gray-900 cursor-pointer">Mes rendez-vous</a>
 
           <!-- Dropdown Nos Prestations -->
           <div class="relative">
             <button (click)="isDropdownOpen = !isDropdownOpen" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900">
               Nos Prestations
-              <span [ngClass]="{ 'rotate-180': isDropdownOpen }" class="ml-2 transition-transform">
-                ▼
-              </span>
+              <span [ngClass]="{ 'rotate-180': isDropdownOpen }" class="ml-2 transition-transform">▼</span>
             </button>
 
-            <div *ngIf="isDropdownOpen" class="absolute left-0 mt-2 bg-white shadow-lg rounded-md">
-              <a *ngFor="let prestation of prestations"
-                [routerLink]="'/prestation/' + prestation._id"
-                class="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-                {{ prestation.nom }}
-              </a>
-
+            <div *ngIf="isDropdownOpen"
+                class="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-4  max-w-screen-md w-full sm:w-[500px]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto">
+                <a *ngFor="let prestation of prestations"
+                  [routerLink]="'/prestation/' + prestation._id"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition text-sm whitespace-normal break-words">
+                  {{ prestation.nom }}
+                </a>
+              </div>
             </div>
-
           </div>
+
         </div>
 
         <!-- Auth buttons -->
@@ -52,7 +50,7 @@
       </nav>
 
       <!-- Contenu principal -->
-      <div class="flex-grow w-full p-6 mt-20">
+      <div class="flex-grow w-full mt-20">
         <router-outlet></router-outlet>
       </div>
     <!-- Footer -->

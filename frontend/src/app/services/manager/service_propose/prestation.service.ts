@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,34 +11,47 @@ export class PrestationService {
 
   constructor(private http: HttpClient) {}
 
-  // Récupérer toutes les prestations
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
   getPrestations(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}`);
+    return this.http.get<any>(`${this.apiUrl}`, {
+      headers: this.getHeaders()
+    });
   }
 
-  // Récupérer une prestation par ID
   getPrestationById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders()
+    });
   }
 
-  // Ajouter une prestation
   createPrestation(prestation: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, prestation);
+    return this.http.post<any>(this.apiUrl, prestation, {
+      headers: this.getHeaders()
+    });
   }
 
-  // Modifier une prestation
   updatePrestation(id: string, prestation: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, prestation);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, prestation, {
+      headers: this.getHeaders()
+    });
   }
 
-  // Supprimer une prestation
   deletePrestation(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders()
+    });
   }
 
-  // Récupérer toutes les pièces
   getPieces(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/pieces`);
+    return this.http.get<any>(`${this.apiUrl}/pieces`, {
+      headers: this.getHeaders()
+    });
   }
-
 }

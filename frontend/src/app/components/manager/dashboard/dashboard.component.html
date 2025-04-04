@@ -1,0 +1,35 @@
+<div class="min-h-screen flex flex-col items-center justify-center">
+    <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">📊 Tableau de Bord du Manager</h1>
+
+    <!-- Conteneur principal -->
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Carte Total Rendez-vous -->
+      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
+        <div class="p-3 bg-blue-500 text-white rounded-full text-2xl">📅</div>
+        <h3 class="text-lg font-semibold text-gray-700 mt-2">Total Rendez-vous</h3>
+        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalRendezVous }}</p>
+      </div>
+
+      <!-- Carte Nombre de Clients -->
+      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
+        <div class="p-3 bg-green-500 text-white rounded-full text-2xl">👥</div>
+        <h3 class="text-lg font-semibold text-gray-700 mt-2">Clients Inscrits</h3>
+        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalClients }}</p>
+      </div>
+
+      <!-- Carte Prestations Effectuées -->
+      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
+        <div class="p-3 bg-yellow-500 text-white rounded-full text-2xl">🛠️</div>
+        <h3 class="text-lg font-semibold text-gray-700 mt-2">Prestations Effectuées</h3>
+        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalPrestations }}</p>
+      </div>
+    </div>
+
+    <!-- Section Graphique -->
+    <div class="w-full max-w-4xl mt-6 bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
+      <h2 class="text-xl font-semibold text-gray-700 text-center mb-4">🏆 Top Prestations Demandées</h2>
+      <div class="w-72 h-72 md:w-96 md:h-96">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>

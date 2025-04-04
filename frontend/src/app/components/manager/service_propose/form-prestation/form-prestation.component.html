@@ -1,63 +1,55 @@
-<div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-  <h2 class="text-2xl font-bold mb-4 text-gray-800">
-    {{ prestation._id ? 'Modifier la Prestation' : 'Ajouter une Prestation' }}
+<div class="max-w-5xl mx-auto p-6 bg-white shadow-xl rounded-lg mt-6">
+  <h2 class="text-2xl font-semibold mb-6 text-center">
+    {{ isEditing ? 'Modifier une Prestation' : 'Créer une Prestation' }}
   </h2>
 
-  <form (ngSubmit)="submit()" class="space-y-6">
-    <!-- Champ Nom -->
+  <form (ngSubmit)="submitForm()" class="space-y-6">
     <div>
-      <label class="block text-sm font-medium text-gray-700">Nom</label>
-      <input type="text" [(ngModel)]="prestation.nom" name="nom"
-        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
+      <label class="block font-medium">Nom</label>
+      <input type="text" class="w-full border p-2 rounded" [(ngModel)]="prestation.nom" name="nom" required />
     </div>
 
-    <!-- Champ Description -->
     <div>
-      <label class="block text-sm font-medium text-gray-700">Description</label>
-      <textarea [(ngModel)]="prestation.description" name="description"
-        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
-      </textarea>
+      <label class="block font-medium">Description</label>
+      <textarea class="w-full border p-2 rounded" [(ngModel)]="prestation.description" name="description" required></textarea>
     </div>
 
-    <!-- Champ Prix Main d'Œuvre -->
     <div>
-      <label class="block text-sm font-medium text-gray-700">Prix Main d'Œuvre</label>
-      <input type="number" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre"
-        class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none" required>
+      <label class="block font-medium">Prix Main d'œuvre</label>
+      <input type="number" class="w-full border p-2 rounded" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre" required />
     </div>
 
-    <!-- Gestion du processus -->
-    <div>
-      <h3 class="text-lg font-semibold text-gray-800">Processus</h3>
-      <div *ngFor="let etape of prestation.processus; let i = index" class="bg-gray-100 p-4 rounded-md mb-3">
-        <label class="block text-sm font-medium text-gray-700">Nom de l'Étape</label>
-        <input type="text" [(ngModel)]="etape.nom_etape" name="nom_etape_{{i}}"
-          class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+    <!-- <h3 class="font-semibold mb-2">Processus {{ i + 1 }}</h3> -->
 
-        <label class="block text-sm font-medium text-gray-700 mt-2">Pièces Possibles</label>
-        <select [(ngModel)]="etape.pieces_possibles" name="pieces_possibles_{{i}}" multiple
-          class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-300 focus:outline-none">
-          <option *ngFor="let piece of pieces" [value]="piece._id">{{ piece.nom }}</option>
-        </select>
+    <div *ngFor="let processus of prestation.processus; let i = index" class="p-4 border rounded mb-4">
+      <h3 class="font-semibold mb-2">Processus {{ i + 1 }}</h3>
+      <label class="block text-sm font-semibold mb-1">Nom de l'étape</label>
+      <input type="text" [(ngModel)]="processus.nom_etape" name="nom_etape_{{i}}" class="w-full border rounded p-2 mb-2" />
 
-        <button type="button" (click)="removeEtape(i)"
-          class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
-          Supprimer Étape
-        </button>
-      </div>
-      <button type="button" (click)="addEtape()"
-        class="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
-        Ajouter Étape
+      <label class="block text-sm font-semibold mb-1">Ordre</label>
+      <input type="number" [(ngModel)]="processus.ordre" name="ordre_{{i}}" class="w-full border rounded p-2 mb-2" />
+
+      <label class="block text-sm font-semibold mb-1">Pièces associées</label>
+      <select
+        [(ngModel)]="processus.pieces_possibles"
+        name="pieces_{{i}}"
+        multiple
+        class="w-full border rounded p-2 mb-2 h-32"
+      >
+        <option *ngFor="let piece of pieces" [value]="piece._id">{{ piece.nom }}</option>
+      </select>
+
+      <button type="button" (click)="removeProcessus(i)" class="text-red-500 hover:underline mt-2">Supprimer ce processus</button>
+    </div>
+
+
+    <div class="flex justify-between">
+      <button type="button" (click)="addProcessus()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        + Ajouter un processus
       </button>
-    </div>
 
-    <!-- Boutons d'actions -->
-    <div class="flex justify-end space-x-2">
-      <button type="button" (click)="cancel()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-        Annuler
-      </button>
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        {{ prestation._id ? 'Mettre à jour' : 'Ajouter' }}
+      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        {{ isEditing ? 'Mettre à jour' : 'Créer' }}
       </button>
     </div>
   </form>
