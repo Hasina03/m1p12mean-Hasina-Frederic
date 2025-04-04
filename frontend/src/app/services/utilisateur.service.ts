@@ -43,7 +43,7 @@ export class UtilisateurService {
           'Authorization': `Bearer ${token}`
         });
 
-        return this.http.delete(`${this.apiUrlInscription}/${id}`, { headers });  // Requête DELETE avec le token
+        return this.http.delete(`${this.apiUrlInscription}/${id}`, { headers });  
       }
 
       updateRoleUtilisateur(id: string, role: string): Observable<any> {

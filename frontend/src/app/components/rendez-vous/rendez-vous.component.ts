@@ -48,7 +48,6 @@ export class RendezVousComponent {
   loadTypesVehicule() {
     this.rendezVousService.getTypesVehicule().subscribe(
       (data) => {
-        console.log('Réponse API:', data);
         this.typesVehicule = data.typesVehicules;
       },
       (error) => {
@@ -87,12 +86,12 @@ export class RendezVousComponent {
     const dateRdv = new Date(this.rendezVous.date_rdv);
     const currentDate = new Date();
 
-    // Comparer la date du rendez-vous avec la date actuelle
+
     if (dateRdv < currentDate) {
-      // Si la date du rendez-vous est antérieure à la date actuelle, afficher une erreur
+
       this.messageError = 'La date du rendez-vous ne peut pas être dans le passé ❌';
       this.messageSuccess = '';
-      return; // Empêcher l'envoi du formulaire
+      return;
     }
     this.rendezVousService.addRendezVous(this.rendezVous).subscribe(
       response => {

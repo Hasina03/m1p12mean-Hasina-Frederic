@@ -38,7 +38,6 @@ isMecanicienModalOpen = false;
   getRendezVous() {
     this.rendezvousService.getRendezVous().subscribe(
       (data) => {
-        console.log(data);
         this.rendezVousList = data;
         this.filteredRendezVous = [...this.rendezVousList];
       },
@@ -51,7 +50,6 @@ isMecanicienModalOpen = false;
   updatestatus(userId: string): void {
     this.rendezvousService.updateStatus(userId).subscribe(
       (response) => {
-        console.log('Rôle mis à jour avec succès', response);
         this.getRendezVous();
         this.closeModal();
       },
@@ -64,7 +62,6 @@ isMecanicienModalOpen = false;
   updateDate(userId: string, newDate: string): void {
     this.rendezvousService.updateDateRendezVous(userId, newDate).subscribe(
       (response) => {
-        console.log('Rendez-vous mis à jour avec succès', response);
         this.getRendezVous();
         this.closeModal();
       },
@@ -76,9 +73,6 @@ isMecanicienModalOpen = false;
 
   updateRendezVousDate(): void {
     if (this.selectedRendezvousId && this.newDate) {
-
-
-
       this.updateDate(this.selectedRendezvousId, this.newDate);
       this.closeReporterModal();
     } else {
@@ -103,19 +97,16 @@ isMecanicienModalOpen = false;
 
 
   onSearchTermChange(): void {
-    console.log("Recherche : ", this.searchTerm);
     this.filterRendezVous();
   }
 
 
   openModal(vehicule: any) {
-    console.log("Véhicule sélectionné :", vehicule);
     this.selectedVehicule = vehicule;
     this.isModalOpen = true;
   }
 
   openReporterModal(rendezvousId: string): void {
-    console.log(rendezvousId);
     this.selectedRendezvousId = rendezvousId;
     this.isReporterModalOpen = true;
   }
@@ -131,8 +122,6 @@ isMecanicienModalOpen = false;
   openMecanicienModal(rendezvous: any) {
     this.selectedRendezvous = rendezvous;
     this.isMecanicienModalOpen = true;
-
-
     this.rendezvousService.getMecaniciens().subscribe(
       (data) => {
         this.mecaniciensList = data;
@@ -158,7 +147,6 @@ isMecanicienModalOpen = false;
     this.rendezvousService.assignMecanicienToRendezvous(this.selectedRendezvous._id, this.selectedMecanicien)
       .subscribe(
         (response) => {
-          console.log("Mécanicien assigné avec succès :", response);
           this.closeMecanicienModal();
           this.getRendezVous();
         },

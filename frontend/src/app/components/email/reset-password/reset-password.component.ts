@@ -26,10 +26,6 @@ export class ResetPasswordComponent  {
       this.message = "Les mots de passe ne correspondent pas.";
       return;
     }
-    console.log(this.newPassword);
-    console.log(this.confirmPassword);
-    console.log(this.token);
-
     const payload = {
       token: this.token,
       newPassword: this.newPassword
