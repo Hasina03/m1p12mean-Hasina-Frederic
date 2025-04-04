@@ -20,8 +20,8 @@ export class ListeUtilisateurComponent {
   newRole: string = '';
   isRoleModalOpen: boolean = false;
 
-  page: number = 1; // Page actuelle
-  itemsPerPage: number = 10; // Nombre d'éléments par page
+  page: number = 1; 
+  itemsPerPage: number = 10;
 
   constructor(private utilisateurService: UtilisateurService) {}
 
@@ -30,19 +30,16 @@ export class ListeUtilisateurComponent {
   }
   filterUtilisateurs(): void {
     if (this.searchTerm) {
-      // Filtrage des utilisateurs selon le terme de recherche
       this.filteredUtilisateurs = this.utilisateurs.filter(utilisateur =>
         utilisateur.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         utilisateur.prenom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         utilisateur.email.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     } else {
-      // Si la recherche est vide, on réinitialise la liste filtrée
       this.filteredUtilisateurs = [...this.utilisateurs];
     }
   }
 
-  // Cette méthode doit être appelée à chaque changement du champ de recherche
   onSearchTermChange(): void {
     this.filterUtilisateurs();
   }
@@ -50,7 +47,6 @@ export class ListeUtilisateurComponent {
   getUtilisateurs(): void {
     this.utilisateurService.getUtilisateur().subscribe(
       (data) => {
-        console.log(data);
         this.utilisateurs = data;
         this.filterUtilisateurs();
       },
@@ -62,10 +58,10 @@ export class ListeUtilisateurComponent {
   openRoleModal(utilisateur: any): void {
     this.selectedUtilisateur = utilisateur;
     this.isRoleModalOpen = true;
-    this.newRole = utilisateur.role; // set current role as the default selected role
+    this.newRole = utilisateur.role;
   }
 
-  // Close the modal
+
   closeRoleModal(): void {
     this.isRoleModalOpen = false;
     this.selectedUtilisateur = null;
@@ -75,7 +71,6 @@ export class ListeUtilisateurComponent {
   updateRole(userId: string, newRole: string): void {
     this.utilisateurService.updateRoleUtilisateur(userId, newRole).subscribe(
       (response) => {
-        console.log('Rôle mis à jour avec succès', response);
         this.getUtilisateurs();
         this.closeRoleModal();
       },
@@ -89,10 +84,8 @@ export class ListeUtilisateurComponent {
     const userDetails = this.utilisateurService.getUserIdFromToken();
     if (userDetails) {
       if (userDetails.role === 'manager') {
-        // Assurez-vous d'envoyer le token dans l'en-tête de la requête
         this.utilisateurService.deleteutilisateur(userId).subscribe(
           (response) => {
-            console.log('Utilisateur supprimé avec succès', response);
             this.getUtilisateurs();
           },
           (error) => {

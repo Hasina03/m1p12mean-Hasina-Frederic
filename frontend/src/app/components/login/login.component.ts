@@ -30,11 +30,9 @@ this.loadUtilisateur());
   onLogin(): void {
     this.utilisateurservice.login(this.user).subscribe(
       (response: any) => {
-        console.log('Connexion réussie:', response);
         if (response.token) {
           localStorage.setItem('token', response.token);
           const userDetails = this.utilisateurservice.getUserIdFromToken();
-          console.log('Détails de l\'utilisateur:', userDetails);
           if (userDetails) {
             switch (userDetails.role) {
               case 'manager':
@@ -70,7 +68,7 @@ this.loadUtilisateur());
     };
 
     this.user = testUsers[role];
-    this.onLogin(); 
+    this.onLogin();
   }
 
 

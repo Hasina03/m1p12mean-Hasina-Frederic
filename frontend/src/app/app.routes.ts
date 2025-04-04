@@ -27,7 +27,7 @@ import { ResetPasswordComponent } from './components/email/reset-password/reset-
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
-    { path: 'rendezvous', component:RendezVousComponent  },
+
     { path: 'confirmationemail', component:ConfirmationemailComponent  },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'users', component: InscriptionComponent },
@@ -38,12 +38,13 @@ export const routes: Routes = [
         component: DefaultLayoutComponent,
         children: [
           { path: 'acceuil', component: AccueilComponent },
-          { path: 'listepiece', component:ListepieceComponent , canActivate: [AuthGuard], },
+          { path: 'listepiece', component:ListepieceComponent , canActivate: [AuthGuard] },
           { path: 'prestation/:id', component: PrestationDetailComponent },
           { path: 'rendez-vous/:id/avis', component: AvisComponent },
           { path: 'rendez-vous/:id/suivi-prestations', component: SuiviPrestationComponent },
           { path: 'devis-select', component: DevisSelectionComponent },
-          { path: 'devis-affichage', component: DevisAffichageComponent }
+          { path: 'devis-affichage', component: DevisAffichageComponent },
+          { path: 'rendezvous', component:RendezVousComponent ,canActivate: [AuthGuard] }
         ]
       },
     // { path: 'acceuil', component: AccueilComponent },

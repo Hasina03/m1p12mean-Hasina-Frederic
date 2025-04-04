@@ -37,16 +37,11 @@ export class ListepieceComponent {
     constructor(private rendezvousService: RendezvousService,private utilisateurservice: UtilisateurService) {}
 
     ngOnInit() {
-      // Récupérer le token dans localStorage
       const token = localStorage.getItem('token');
-
       if (token) {
         try {
-
           const decodedToken: any = this.utilisateurservice.getUserIdFromToken();
           const clientId = decodedToken.id;
-          console.log(clientId);
-
           if (clientId) {
             this.getRendezVousByClient(clientId);
           } else {
@@ -63,99 +58,111 @@ export class ListepieceComponent {
     exportPdf() {
       const doc = new jsPDF('p', 'mm', [150, 200]);
 
-      // Définir les styles de la facture
-      doc.setFont("times", "normal");
-      doc.setFontSize(20);
+
+          const maxHeight = doc.internal.pageSize.height - 10;
+      let yPosition = 20;
+      let facture=18;
+      const garageName = 'Facture';
+      let fontSize = 11;
+      doc.setFont("times", "bold");
+      doc.setFontSize(facture);
       doc.setTextColor(0, 0, 255);
+      const garageNameWidth = doc.getTextWidth(garageName);
+      const garageNameX = (doc.internal.pageSize.width - garageNameWidth) / 2;
 
-      // Ajouter le titre de la facture
-      const title = 'Facture';
-      const titleWidth = doc.getTextWidth(title);
-      const titleX = (doc.internal.pageSize.width - titleWidth) / 2; // Calculer la position horizontale centrée
-      doc.text(title, titleX, 20);
+      doc.text(garageName, garageNameX, yPosition);
+      yPosition += 20;
 
-      // Ajouter des informations générales
-      doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0); // Retour à la couleur noire
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, 40);
-      doc.text(`Client: ${this.selectedRendezvous?.client_id?.nom} ${this.selectedRendezvous?.client_id?.prenom}`, 10, 50);
+      let font = 16;
+      doc.setFontSize(font);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Garage HF`, 10, yPosition);
+      yPosition += 10;
+      doc.setFont("times", "normal");
+      doc.setFontSize(fontSize);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, yPosition);
+      yPosition += 10;
 
-      // Ajouter une ligne décorative
+
+      const selectedRdv = this.rendezVousList.find(rdv => rdv._id === this.selectedRendezvousId);
+      if (selectedRdv) {
+        const clientNom = selectedRdv.client_id?.nom || 'Nom client non trouvé';
+        const clientPrenom = selectedRdv.client_id?.prenom || 'Prénom non trouvé';
+        doc.text(`Client: ${clientNom} ${clientPrenom}`, 10, yPosition);
+      } else {
+        doc.text('Client non trouvé', 10, yPosition);
+      }
+
       doc.setDrawColor(0, 0, 0);
-      doc.line(10, 60, 140, 60); // Ajusté pour correspondre à la largeur du PDF
+      doc.line(10, yPosition + 10, 140, yPosition + 10);
 
-      // Ajouter un tableau pour les prestations
       const prestations = this.selectedRendezvous?.prestation.map((p: any) => [
         p.prestation_id?.nom,
         p.prestation_id?.prix_main_oeuvre
       ]) || [];
 
-      let yPosition = 70; // Position initiale
-
-      doc.setFontSize(14);
+      yPosition += 20;
+      doc.setFontSize(fontSize);
       doc.text('Prestations', 10, yPosition);
+      yPosition += 10;
 
-      yPosition += 10; // Laisser un espace après le titre
-
-      // Titre des colonnes
       doc.text('Nom', 10, yPosition);
       doc.text('Prix', 120, yPosition);
+      yPosition += 10;
 
-      yPosition += 10; // Descendre pour le contenu
-
-      // Contenu des prestations
       prestations.forEach((p: any) => {
-        doc.text(p[0], 10, yPosition); // Nom
-        doc.text(p[1].toString(), 120, yPosition); // Prix (Correction ici)
+        doc.text(p[0], 10, yPosition);
+        doc.text(p[1].toString(), 120, yPosition);
         yPosition += 10;
       });
 
-      // Ajouter un tableau pour les pièces
       const pieces = this.selectedRendezvous?.pieces.map((piece: any) => [
         piece.nom,
         piece.prix
       ]) || [];
 
-      // Ajouter un espace avant le tableau des pièces
+      yPosition += 10;
+      doc.setFontSize(fontSize);
+      doc.text('Pièces', 10, yPosition);
       yPosition += 10;
 
-      doc.setFontSize(14);
-      doc.text('Pièces', 10, yPosition);
-
-      yPosition += 10; // Laisser un espace après le titre
-
-      // Titre des colonnes
       doc.text('Nom', 10, yPosition);
       doc.text('Prix', 120, yPosition);
-
       yPosition += 10;
 
-      // Contenu des pièces
-      if (pieces.length > 0) {
-        pieces.forEach((piece: any) => {
-          doc.text(piece[0], 10, yPosition); // Nom
-          doc.text(piece[1].toString(), 120, yPosition); // Prix
-          yPosition += 10;
-        });
-      } else {
-        doc.text('Aucune pièce pour cette facture.', 10, yPosition);
+      pieces.forEach((piece: any) => {
+        doc.text(piece[0], 10, yPosition);
+        doc.text(piece[1].toString(), 120, yPosition);
         yPosition += 10;
+      });
+
+      const totalText = 'Total:';
+      const totalAmount = this.selectedRendezvous?.total;
+      const totalAmountText = totalAmount ? `${totalAmount} Ariary` : '0 Ariary';  
+
+      const totalTextWidth = doc.getTextWidth(totalText);
+      const totalAmountWidth = doc.getTextWidth(totalAmountText);
+      const totalX = doc.internal.pageSize.width - totalAmountWidth - 10;
+      doc.setFontSize(fontSize);
+      doc.text(totalText, 10, yPosition);
+      doc.text(totalAmountText, totalX, yPosition);
+
+      const contentHeight = yPosition + 10;
+
+      if (contentHeight > maxHeight) {
+        fontSize = Math.floor(fontSize * (maxHeight / contentHeight));
+        doc.setFontSize(fontSize);
+        yPosition = 20;
       }
 
-      // Ajouter le total de la facture
-      doc.setFontSize(14);
-      doc.text(`Total: ${this.selectedRendezvous?.total}`, 10, yPosition);
-
-      // Sauvegarder le fichier PDF
       doc.save('facture.pdf');
     }
-
 
 
     getRendezVous() {
       this.rendezvousService.getRendezVous().subscribe(
         (data) => {
-          console.log(data);
           this.rendezVousList = data;
           this.filteredRendezVous = [...this.rendezVousList];
         },
@@ -168,7 +175,6 @@ export class ListepieceComponent {
     getRendezVousByClient(clientId: string) {
       this.rendezvousService.getRendezVousByClient(clientId).subscribe(
         (data) => {
-          console.log("Rendez-vous du client :", data);
           this.rendezVousList = data;
           this.filteredRendezVous = [...this.rendezVousList];
         },
@@ -181,7 +187,6 @@ export class ListepieceComponent {
     updatestatus(userId: string): void {
       this.rendezvousService.updateStatus(userId).subscribe(
         (response) => {
-          console.log('Rôle mis à jour avec succès', response);
           this.getRendezVous();
           this.closeModal();
         },
@@ -206,9 +211,6 @@ export class ListepieceComponent {
 
     updateRendezVousDate(): void {
       if (this.selectedRendezvousId && this.newDate) {
-
-
-
         this.updateDate(this.selectedRendezvousId, this.newDate);
         this.closeReporterModal();
       } else {
@@ -239,10 +241,9 @@ export class ListepieceComponent {
 
 
     openModal(rendezvousId: string) {
-      console.log("ID rendez-vous envoyé:", rendezvousId); // Vérifie que l'ID est correct
+      this.selectedRendezvousId = rendezvousId;
       this.rendezvousService.getFacture(rendezvousId).subscribe(
         (data) => {
-          console.log('Facture reçue:', data);
           this.selectedRendezvous = data;
           this.selectedVehicule = data.vehicule;
           this.isModalOpen = true;
@@ -253,11 +254,7 @@ export class ListepieceComponent {
       );
     }
 
-
-
-
     openReporterModal(rendezvousId: string): void {
-      console.log(rendezvousId);
       this.selectedRendezvousId = rendezvousId;
       this.isReporterModalOpen = true;
     }
@@ -273,8 +270,6 @@ export class ListepieceComponent {
     openMecanicienModal(rendezvous: any) {
       this.selectedRendezvous = rendezvous;
       this.isMecanicienModalOpen = true;
-
-
       this.rendezvousService.getMecaniciens().subscribe(
         (data) => {
           this.mecaniciensList = data;
@@ -300,7 +295,6 @@ export class ListepieceComponent {
       this.rendezvousService.assignMecanicienToRendezvous(this.selectedRendezvous._id, this.selectedMecanicien)
         .subscribe(
           (response) => {
-            console.log("Mécanicien assigné avec succès :", response);
             this.closeMecanicienModal();
             this.getRendezVous();
           },

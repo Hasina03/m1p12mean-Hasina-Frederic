@@ -28,7 +28,6 @@ export class VehiculeComponent {
       response => {
         this.messageSuccess = 'Véhicule ajouté avec succès ✅';
         this.messageError = '';
-        console.log('vehicule créé', response);
       },
       error => {
         console.error('Erreur lors de la création du vehicule', error);
