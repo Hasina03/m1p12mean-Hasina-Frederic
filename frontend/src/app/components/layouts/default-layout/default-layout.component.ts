@@ -30,8 +30,7 @@ export class DefaultLayoutComponent implements OnInit {
       }));
     });
 
-    this.checkAuth2(); // Vérifie l'authentification au chargement
-    // Écoute les changements du localStorage
+    this.checkAuth2();
     window.addEventListener('storage', this.checkAuth2.bind(this));
   }
 
@@ -47,12 +46,12 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
     checkAuth2() {
-      this.isAuthenticated = !!localStorage.getItem('token'); // true si un token existe, sinon false
+      this.isAuthenticated = !!localStorage.getItem('token');
     }
 
     logout(): void {
       localStorage.removeItem('token');
-      this.checkAuth2(); // Met à jour immédiatement isAuthenticated
+      this.checkAuth2();
       this.router.navigate(['/']);
     }
 
