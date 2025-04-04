@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class ConfirmationemailComponent {
   email: string = '';
   message: string = '';
-  resetLink: string = ''; 
+  resetLink: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +21,6 @@ export class ConfirmationemailComponent {
     this.http.post<{ resetLink: string }>('http://localhost:5000/forgot-password/forgot-password', { email: this.email })
       .subscribe(
         (response) => {
-          console.log(this.resetLink);
           this.resetLink = response.resetLink;
           this.message = 'Un lien de réinitialisation a été envoyé à votre email.';
         },
@@ -33,7 +32,6 @@ export class ConfirmationemailComponent {
 
   redirectToReset() {
     if (this.resetLink) {
-      console.log(this.resetLink);
       window.location.href = this.resetLink;
     }
   }

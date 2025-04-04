@@ -36,20 +36,20 @@ export class ManagerComponent {
   toggleMenu(menu: string) {
     if (menu === 'stock') {
       this.isStockMenuVisible = !this.isStockMenuVisible;
-      if (this.isStockMenuVisible) this.isMenuVisible = false; // Ferme l'autre menu
+      if (this.isStockMenuVisible) this.isMenuVisible = false; 
     } else if (menu === 'vehicules') {
       this.isMenuVisible = !this.isMenuVisible;
-      if (this.isMenuVisible) this.isStockMenuVisible = false; // Ferme l'autre menu
+      if (this.isMenuVisible) this.isStockMenuVisible = false;
     } else if (menu === 'prestation') {
       this.isPrestationMenuVisible  = !this.isPrestationMenuVisible ;
-      if (this.isPrestationMenuVisible ) this.isStockMenuVisible = false; // Ferme l'autre menu
+      if (this.isPrestationMenuVisible ) this.isStockMenuVisible = false;
     }
   }
 
 
   logout(): void {
-    localStorage.removeItem('token'); // Supprimer le token
-    this.isDropdownOpen = false; // Fermer le menu
-    this.router.navigate(['/login']); // Rediriger vers login
+    localStorage.removeItem('token');
+    this.isDropdownOpen = false;
+    this.router.navigate(['/login']);
   }
 }

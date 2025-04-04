@@ -16,7 +16,7 @@ export class PieceComponent {
   vehicules: any[] = [];
   newPiece = {
     nom: '',
-    variantes: [{ prix: 0, type_vehicule: '' }]  // Adaptation du format
+    variantes: [{ prix: 0, type_vehicule: '' }]
   };
   errorMessage: string = '';
   messageSuccess = '';
@@ -44,7 +44,6 @@ export class PieceComponent {
   getVehicules(): void {
     this.vehiculeService.getvehicule().subscribe(
       (data) => {
-        console.log('Véhicules récupérés:', data);
         this.vehicules = data;
       },
       (error) => {
@@ -65,7 +64,7 @@ export class PieceComponent {
         this.messageSuccess = 'Pièce ajoutée avec succès ✅';
         this.messageError = '';
         this.getPieces();
-        this.newPiece = { nom: '', variantes: [{ prix: 0, type_vehicule: '' }] };  // Réinitialiser le formulaire
+        this.newPiece = { nom: '', variantes: [{ prix: 0, type_vehicule: '' }] };
       },
       (error) => {
         this.messageError = 'Erreur lors de l\'ajout de la pièce ❌';
