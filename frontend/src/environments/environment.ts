@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000'
+  apiUrl: process.env['API_URL'] || 'https://m1p12mean-frederic-hasina.onrender.com'
 };
