@@ -9,6 +9,8 @@ import { environment } from '../../../environments/environment';
 export class RendezvousService {
   private apitype = `${environment.apiUrl}/devis`;
  private apiUrl= `${environment.apiUrl}/rendezvous`;
+ private apitypevehicule = `${environment.apiUrl}/vehicules`;
+
 
 
   constructor(private http: HttpClient) { }
@@ -21,7 +23,7 @@ export class RendezvousService {
     });
   }
   getFacture(rendezvousId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/facture`, { rendezVousId: rendezvousId });
+    return this.http.post(`${this.apiUrl}/facture`, { rendezVousId: rendezvousId }, { headers: this.getHeaders() });
   }
 
 
@@ -34,9 +36,10 @@ export class RendezvousService {
   }
 
 
-  getTypesVehicule(): Observable<{ typesVehicules: any[] }> {
-    return this.http.get<{ typesVehicules: any[] }>(`${this.apitype}/options`);
-  }
+getTypesVehicule(): Observable<{ typesVehicules: any[] }> {
+  return this.http.get<{ typesVehicules: any[] }>(`${this.apitypevehicule}/typevehicule`);
+}
+
 
 
 

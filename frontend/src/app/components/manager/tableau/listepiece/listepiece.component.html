@@ -73,11 +73,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let prestation of selectedRendezvous?.prestation">
-            <td class="border px-4 py-2">{{ prestation.prestation_id?.nom }}</td>
-            <td class="border px-4 py-2">{{ prestation.prestation_id?.description }}</td>
-            <td class="border px-4 py-2">{{ prestation.prestation_id?.prix_main_oeuvre }} Ar</td>
-          </tr>
+         <tr *ngFor="let prestation of selectedRendezvous?.prestations">
+  <td class="border px-4 py-2">{{ prestation.prestation_id?.nom }}</td>
+  <td class="border px-4 py-2">{{ prestation.prestation_id?.description }}</td>
+  <td class="border px-4 py-2">{{ prestation.prestation_id?.prix_main_oeuvre }} Ar</td>
+</tr>
+
         </tbody>
       </table>
 
