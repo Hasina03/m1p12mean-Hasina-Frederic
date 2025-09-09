@@ -139,7 +139,7 @@ export class ListepieceComponent {
 
       const totalText = 'Total:';
       const totalAmount = this.selectedRendezvous?.total;
-      const totalAmountText = totalAmount ? `${totalAmount} Ariary` : '0 Ariary';  
+      const totalAmountText = totalAmount ? `${totalAmount} Ariary` : '0 Ariary';
 
       const totalTextWidth = doc.getTextWidth(totalText);
       const totalAmountWidth = doc.getTextWidth(totalAmountText);
@@ -219,19 +219,31 @@ export class ListepieceComponent {
     }
 
     filterRendezVous(): void {
-      if (this.searchTerm) {
-        const searchLower = this.searchTerm.toLowerCase();
+  if (this.searchTerm) {
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
 
-        this.filteredRendezVous = this.rendezVousList.filter(rdv =>
-          (rdv.client_id?.nom?.toLowerCase().includes(searchLower) ||
-           rdv.statut?.toLowerCase().includes(searchLower))
-        );
-      } else {
-        this.filteredRendezVous = [...this.rendezVousList];
-      }
+    const searchWords = normalize(this.searchTerm).split(/\s+/);
 
-      console.log("Résultats filtrés :", this.filteredRendezVous);
-    }
+    this.filteredRendezVous = this.rendezVousList.filter(rdv => {
+      const nom = rdv.client_id?.nom || "";
+      const prenom = rdv.client_id?.prenom || "";
+      const statut = rdv.statut || "";
+
+      const combined = normalize(`${nom} ${prenom} ${statut}`);
+
+      return searchWords.every(word => combined.includes(word));
+    });
+  } else {
+    this.filteredRendezVous = [...this.rendezVousList];
+  }
+
+  console.log("Résultats filtrés :", this.filteredRendezVous);
+}
 
 
     onSearchTermChange(): void {

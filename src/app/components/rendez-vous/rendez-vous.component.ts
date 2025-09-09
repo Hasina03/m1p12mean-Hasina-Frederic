@@ -91,7 +91,6 @@ onSubmit() {
     return;
   }
 
-// Assigner le type de véhicule
 if (this.selectedTypeId === 'autre' && this.autreTypeVehicule.trim() !== '') {
   this.rendezVous.vehicule_id.type = null;                  // TypeVehicule ObjectId vide
   this.rendezVous.vehicule_id.type_autre = this.autreTypeVehicule.trim();
