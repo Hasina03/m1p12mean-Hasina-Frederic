@@ -15,9 +15,9 @@ export class PieceComponent {
   pieces: any[] = [];
   vehicules: any[] = [];
   newPiece = {
-    nom: '',
-    variantes: [{ prix: 0, type_vehicule: '' }]
-  };
+  nom: '',
+  compatibilites: [{ prix: 0, vehicule: '' }]
+};
   errorMessage: string = '';
   messageSuccess = '';
   messageError = '';
@@ -53,26 +53,27 @@ export class PieceComponent {
     );
   }
 
-  addPiece(): void {
-    if (!this.newPiece.nom || this.newPiece.variantes.some(v => !v.type_vehicule || v.prix <= 0)) {
-      this.messageError = 'Veuillez remplir tous les champs correctement ❌';
-      return;
-    }
-
-    this.stockpieceService.addpiece(this.newPiece).subscribe(
-      () => {
-        this.messageSuccess = 'Pièce ajoutée avec succès ✅';
-        this.messageError = '';
-        this.getPieces();
-        this.newPiece = { nom: '', variantes: [{ prix: 0, type_vehicule: '' }] };
-      },
-      (error) => {
-        this.messageError = 'Erreur lors de l\'ajout de la pièce ❌';
-        this.messageSuccess = '';
-        console.error(error);
-      }
-    );
+addPiece(): void {
+  if (!this.newPiece.nom || this.newPiece.compatibilites.some(c => !c.vehicule || c.prix <= 0)) {
+    this.messageError = 'Veuillez remplir tous les champs correctement ❌';
+    return;
   }
+
+  this.stockpieceService.addpiece(this.newPiece).subscribe(
+    () => {
+      this.messageSuccess = 'Pièce ajoutée avec succès ✅';
+      this.messageError = '';
+      this.getPieces();
+      this.newPiece = { nom: '', compatibilites: [{ prix: 0, vehicule: '' }] };
+    },
+    (error) => {
+      this.messageError = 'Erreur lors de l\'ajout de la pièce ❌';
+      this.messageSuccess = '';
+      console.error(error);
+    }
+  );
+}
+
 
   deletePiece(id: string): void {
     this.stockpieceService.deletepiece(id).subscribe(

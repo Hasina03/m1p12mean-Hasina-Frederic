@@ -34,12 +34,14 @@ export class ListevehiculeComponent {
     );
   }
 
-  onSearchTermChange() {
-    this.filteredVehicules = this.vehicules.filter(v =>
-      v.marque.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      v.modele.toLowerCase().includes(this.searchTerm.toLowerCase()) 
-    );
-  }
+ onSearchTermChange() {
+  const term = this.searchTerm.toLowerCase();
+  this.filteredVehicules = this.vehicules.filter(v =>
+    (v.marque?.toLowerCase().includes(term)) ||
+    (v.modele?.toLowerCase().includes(term))
+  );
+}
+
 
   deleteVehicule(id: string) {
     this.vehiculeService.deletevehicule(id).subscribe(

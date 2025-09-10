@@ -32,7 +32,11 @@
 
         <!-- Sous-menu pour le Stock -->
         <ul *ngIf="isStockMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
-
+           <li>
+              <a routerLink="/manager/listepiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+                <span class="text-sm">Liste des pièces</span>
+              </a>
+            </li>
           <li>
             <a routerLink="/manager/ajoutpiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
               <span class="text-sm">Ajout pièce</span>
