@@ -59,7 +59,7 @@ export class ListepieceComponent {
       const doc = new jsPDF('p', 'mm', [150, 200]);
 
 
-          const maxHeight = doc.internal.pageSize.height - 10;
+      const maxHeight = doc.internal.pageSize.height - 10;
       let yPosition = 20;
       let facture=18;
       const garageName = 'Facture';
@@ -97,10 +97,11 @@ export class ListepieceComponent {
       doc.setDrawColor(0, 0, 0);
       doc.line(10, yPosition + 10, 140, yPosition + 10);
 
-      const prestations = this.selectedRendezvous?.prestation.map((p: any) => [
-        p.prestation_id?.nom,
-        p.prestation_id?.prix_main_oeuvre
-      ]) || [];
+      const prestations = this.selectedRendezvous?.prestations.map((p: any) => [
+          p.nom,
+          p.prix_main_oeuvre
+        ]) || [];
+
 
       yPosition += 20;
       doc.setFontSize(fontSize);
