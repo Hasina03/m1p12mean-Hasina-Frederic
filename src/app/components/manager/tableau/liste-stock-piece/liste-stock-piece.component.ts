@@ -35,18 +35,33 @@ export class ListeStockPieceComponent {
   }
 
   onSearchTermChange() {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredPieces = this.pieces.filter(piece =>
-      piece.nom?.toLowerCase().includes(term) ||
-      this.getVehiculeCompatibles(piece).toLowerCase().includes(term)
-    );
+    this.filterPieces();
+  }
+
+  filterPieces() {
+    if (!this.searchTerm) {
+      this.filteredPieces = [...this.pieces];
+      return;
+    }
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    const searchWords = normalize(this.searchTerm).split(/\s+/);
+
+    this.filteredPieces = this.pieces.filter(piece => {
+      const combined = normalize(`${piece.nom} ${this.getVehiculeCompatibles(piece)}`);
+      return searchWords.every(word => combined.includes(word));
+    });
   }
 
   deletePiece(id: string) {
     this.stockService.deletepiece(id).subscribe(
       () => {
         this.pieces = this.pieces.filter(p => p._id !== id);
-        this.onSearchTermChange();
+        this.filterPieces();
       },
       error => console.error('Erreur lors de la suppression de la pièce', error)
     );

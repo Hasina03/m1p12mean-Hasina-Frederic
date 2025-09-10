@@ -80,20 +80,30 @@ isMecanicienModalOpen = false;
     }
   }
 
-  filterRendezVous(): void {
-    if (this.searchTerm) {
-      const searchLower = this.searchTerm.toLowerCase();
+filterRendezVous(): void {
+  if (this.searchTerm) {
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    const searchWords = normalize(this.searchTerm).split(/\s+/);
 
-      this.filteredRendezVous = this.rendezVousList.filter(rdv =>
-        (rdv.client_id?.nom?.toLowerCase().includes(searchLower) ||
-         rdv.statut?.toLowerCase().includes(searchLower))
-      );
-    } else {
-      this.filteredRendezVous = [...this.rendezVousList];
-    }
+    this.filteredRendezVous = this.rendezVousList.filter(rdv => {
+      const nom = rdv.client_id?.nom || "";
+      const prenom = rdv.client_id?.prenom || "";
+      const statut = rdv.statut || "";
 
-    console.log("Résultats filtrés :", this.filteredRendezVous);
+      const combined = normalize(`${nom} ${prenom} ${statut}`);
+      return searchWords.every(word => combined.includes(word));
+    });
+  } else {
+    this.filteredRendezVous = [...this.rendezVousList];
   }
+
+  console.log("Résultats filtrés :", this.filteredRendezVous);
+}
 
 
   onSearchTermChange(): void {
