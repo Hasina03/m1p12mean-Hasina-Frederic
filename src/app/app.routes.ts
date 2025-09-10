@@ -25,6 +25,7 @@ import { AuthGuard } from './auth.guard';
 import { ConfirmationemailComponent } from './components/email/confirmationemail/confirmationemail.component';
 import { ResetPasswordComponent } from './components/email/reset-password/reset-password.component';
 import { DashboardComponent } from './components/manager/dashboard/dashboard.component';
+import { ListeStockPieceComponent } from './components/manager/tableau/liste-stock-piece/liste-stock-piece.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -74,6 +75,7 @@ export const routes: Routes = [
         { path: 'ajoutvehicule', component:VehiculeComponent  },
         { path: 'listevehicule', component:ListevehiculeComponent  },
         { path: 'ajoutpiece', component:PieceComponent  },
+        { path: 'listepiece', component: ListeStockPieceComponent },
         // { path: 'prestations', component: ListePrestationsComponent },
         // { path: 'prestations/add', component: FormPrestationComponent },
         // { path: 'prestations/edit/:id', component: FormPrestationComponent },
