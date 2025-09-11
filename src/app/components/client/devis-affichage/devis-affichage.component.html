@@ -1,33 +1,42 @@
 <div *ngIf="devis" class="max-w-3xl mx-auto bg-white p-6 shadow-lg rounded-lg">
     <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">
-        🛠️ Devis pour un <span class="text-blue-600">{{ devis.typeVehicule }}</span>
+      🛠️ Devis pour le véhicule <span class="text-blue-600">{{ devis.vehicule }}</span>
+      <span class="text-sm text-gray-500">({{ devis.type_vehicule }})</span>
     </h2>
 
     <div class="mt-4">
-        <h3 class="text-xl font-semibold text-gray-700">Prestations :</h3>
+      <h3 class="text-xl font-semibold text-gray-700">Prestations :</h3>
 
-        <div *ngFor="let prestation of devis.prestations" class="mt-4 p-5 border rounded-lg shadow-sm bg-gray-50">
-            <h4 class="text-lg font-semibold text-blue-700">{{ prestation.nom }}</h4>
-            <p class="text-gray-600">💰 Main d'œuvre : <span class="font-medium">{{ prestation.prix_main_oeuvre }} Ar</span></p>
+      <div *ngFor="let prestation of devis.devis" class="mt-4 p-5 border rounded-lg shadow-sm bg-gray-50">
+        <h4 class="text-lg font-semibold text-blue-700">{{ prestation.prestation }}</h4>
 
-            <h4 class="font-medium mt-2 text-gray-700">🔩 Pièces nécessaires :</h4>
-            <ul *ngIf="prestation.pieces.length > 0; else noPieces" class="list-disc pl-5 text-gray-600">
-                <li *ngFor="let piece of prestation.pieces">
-                    {{ piece.nom }} - <span class="font-medium">{{ piece.prix }} Ar</span>
-                </li>
-            </ul>
+        <p class="text-gray-600">💰 Main d'œuvre :
+          <span class="font-medium">{{ prestation.main_oeuvre }} Ar</span>
+        </p>
 
-            <ng-template #noPieces>
-                <p class="text-red-500">❌ Les pièces à utiliser sont indisponibles dans le garage pour l'instant.</p>
-            </ng-template>
+        <h4 class="font-medium mt-2 text-gray-700">🔩 Pièces nécessaires :</h4>
 
-            <p class="text-gray-900 font-bold mt-3 text-lg">💵 Total : <span class="text-green-600">{{ prestation.total_prestation }} Ar</span></p>
-        </div>
+        <ul *ngIf="prestation.pieces.length > 0; else noPieces" class="list-disc pl-5 text-gray-600">
+          <li *ngFor="let piece of prestation.pieces">
+            {{ piece.nom }} - <span class="font-medium">{{ piece.prix }} Ar</span>
+          </li>
+        </ul>
+
+        <ng-template #noPieces>
+          <p class="text-red-500">❌ Les pièces à utiliser sont indisponibles dans le garage pour l'instant.</p>
+        </ng-template>
+
+        <p class="text-gray-900 font-bold mt-3 text-lg">
+          💵 Total prestation :
+          <span class="text-green-600">{{ prestation.total }} Ar</span>
+        </p>
+      </div>
     </div>
 
     <div class="mt-6 p-5 bg-gray-100 border-t rounded-lg shadow-sm">
-        <h3 class="text-xl font-bold text-gray-800">💰 Total du devis :
-            <span class="text-green-600">{{ devis.total }} Ar</span>
-        </h3>
+      <h3 class="text-xl font-bold text-gray-800">
+        💰 Total du devis :
+        <span class="text-green-600">{{ devis.totalGlobal }} Ar</span>
+      </h3>
     </div>
-</div>
+  </div>
