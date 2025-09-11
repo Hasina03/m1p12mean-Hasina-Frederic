@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DevisService } from '../../../services/client/devis/devis.service';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,16 +13,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './devis-selection.component.css'
 })
 export class DevisSelectionComponent implements OnInit {
-  typesVehicules: any[] = [];
+  vehicules: any[] = [];
   prestations: any[] = [];
-  selectedTypeVehicule: string = '';
+  selectedVehiculeId: string = '';
   selectedPrestations: string[] = [];
 
   constructor(private devisService: DevisService, private router: Router) {}
 
   ngOnInit() {
     this.devisService.getOptions().subscribe(response => {
-      this.typesVehicules = response.typesVehicules;
+      this.vehicules = response.vehicules;
       this.prestations = response.prestations;
     });
   }
@@ -36,13 +36,13 @@ export class DevisSelectionComponent implements OnInit {
   }
 
   generateDevis() {
-    if (!this.selectedTypeVehicule || this.selectedPrestations.length === 0) {
-      alert("Veuillez sélectionner un type de véhicule et au moins une prestation.");
+    if (!this.selectedVehiculeId || this.selectedPrestations.length === 0) {
+      alert("Veuillez sélectionner un véhicule et au moins une prestation.");
       return;
     }
 
     this.router.navigate(['/devis-affichage'], {
-      queryParams: { typeVehiculeId: this.selectedTypeVehicule, prestationIds: this.selectedPrestations }
+      queryParams: { vehiculeId: this.selectedVehiculeId, prestationIds: this.selectedPrestations }
     });
   }
 }

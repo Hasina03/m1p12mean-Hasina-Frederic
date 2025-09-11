@@ -15,7 +15,7 @@ export class DevisService {
     return this.http.get(`${this.apiUrl}/options`);
   }
 
-  generateDevis(data: { typeVehiculeId: string, prestationIds: string[] }): Observable<any> {
+  generateDevis(data: { vehiculeId: string, prestationIds: string[] }): Observable<any> {
     return this.http.post(`${this.apiUrl}/generer`, data);
   }
 }
