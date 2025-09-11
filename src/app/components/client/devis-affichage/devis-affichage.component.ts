@@ -17,9 +17,8 @@ export class DevisAffichageComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const typeVehiculeId = params['typeVehiculeId'];
+      const vehiculeId = params['vehiculeId'];
 
-      // Vérifier si prestationIds est un tableau ou une chaîne unique
       let prestationIds: string[] = [];
       if (Array.isArray(params['prestationIds'])) {
         prestationIds = params['prestationIds'];
@@ -27,7 +26,7 @@ export class DevisAffichageComponent implements OnInit {
         prestationIds = [params['prestationIds']];
       }
 
-      this.devisService.generateDevis({ typeVehiculeId, prestationIds }).subscribe(response => {
+      this.devisService.generateDevis({ vehiculeId, prestationIds }).subscribe(response => {
         this.devis = response;
       });
     });

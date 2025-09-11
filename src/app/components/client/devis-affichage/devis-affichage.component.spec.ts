@@ -11,7 +11,7 @@ describe('DevisAffichageComponent', () => {
       imports: [DevisAffichageComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(DevisAffichageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
