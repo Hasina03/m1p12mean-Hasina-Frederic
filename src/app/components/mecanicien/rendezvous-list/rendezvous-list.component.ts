@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { RendezvousService, RendezVous } from '../../../services/mecanicien/rendezvous/rendezvous.service';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
-import { StatsHeaderComponent } from '../stats-header/stats-header.component';
 import { AjouterPrestationModalComponent } from '../ajouter-prestation-modal/ajouter-prestation-modal.component';
 
 @Component({
   selector: 'app-rendezvous-list',
   standalone: true,
-  imports: [CommonModule, StatsHeaderComponent, AjouterPrestationModalComponent],
+  imports: [CommonModule, AjouterPrestationModalComponent],
   providers: [DatePipe],
   templateUrl: './rendezvous-list.component.html',
   styleUrl: './rendezvous-list.component.css'
