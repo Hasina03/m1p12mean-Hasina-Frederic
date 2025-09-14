@@ -46,15 +46,17 @@
             <td class="px-4 py-3 border font-medium text-gray-900">{{ vehicule.vehicule }}</td>
 
             <!-- Somme des pièces -->
-            <td class="px-4 py-3 border text-center text-gray-800">
-              {{
-                getPrixPiecesTotal(vehicule.prixPieces)
-              }} Ar
+            <td class="px-4 py-3 border text-gray-800">
+              <div *ngFor="let ligne of vehicule.prixPieces">
+                {{ ligne.ordre }}- {{ ligne.nom_etape }} :
+                <span *ngIf="ligne.prix !== null; else indisponible">{{ ligne.prix }} Ar</span>
+                <ng-template #indisponible>Pièce indisponible</ng-template>
+              </div>
             </td>
 
             <!-- Main d'œuvre -->
             <td class="px-4 py-3 border text-center text-gray-800 ">
-              {{ prestation.prix_main_oeuvre }} Ar
+              {{ prestation.prix_main_oeuvre + vehicule.supplement }} Ar
             </td>
 
             <!-- Prix total -->
