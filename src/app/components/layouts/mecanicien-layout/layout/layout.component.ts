@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [FormsModule ,CommonModule],
+  imports: [FormsModule, CommonModule, RouterOutlet, RouterLink],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
@@ -14,14 +14,14 @@ export class LayoutComponent {
 
   constructor(private router: Router){}
   isDropdownOpen = false;
+
   logout(): void {
-    localStorage.removeItem('token'); // Supprimer le token
-    this.isDropdownOpen = false; // Fermer le menu
-    this.router.navigate(['/login']); // Rediriger vers login
+    localStorage.removeItem('token');
+    this.isDropdownOpen = false;
+    this.router.navigate(['/login']);
   }
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
-
 }
