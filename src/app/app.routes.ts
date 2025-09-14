@@ -26,6 +26,7 @@ import { ConfirmationemailComponent } from './components/email/confirmationemail
 import { ResetPasswordComponent } from './components/email/reset-password/reset-password.component';
 import { DashboardComponent } from './components/manager/dashboard/dashboard.component';
 import { ListeStockPieceComponent } from './components/manager/tableau/liste-stock-piece/liste-stock-piece.component';
+import { MecanicienDashboardComponent } from './components/mecanicien/mecanicien-dashboard/mecanicien-dashboard.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -88,9 +89,10 @@ export const routes: Routes = [
   {
     path: 'mecanicien', component: LayoutComponent,
     children: [
-      { path: '', redirectTo: 'rendez-vous', pathMatch: 'full' }, // Redirection par défaut
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: MecanicienDashboardComponent },
       { path: 'rendez-vous', component: RendezvousListComponent },
-
+      // { path: 'rendez-vous/:id', component: RendezvousDetailsComponent}, // À décommenter plus tard
     ]
   }
 
