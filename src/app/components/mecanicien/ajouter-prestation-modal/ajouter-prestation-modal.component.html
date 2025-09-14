@@ -1,0 +1,92 @@
+<!-- Modal backdrop -->
+<div *ngIf="isOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+     (click)="onBackdropClick($event)">
+
+  <!-- Modal content -->
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+       (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center p-6 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Ajouter une prestation</h3>
+      <button (click)="fermerModal()" class="text-gray-400 hover:text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6">
+      <!-- Erreur -->
+      <div *ngIf="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded flex justify-between items-center">
+        <span>{{ error }}</span>
+        <button *ngIf="error.includes('prestations')" (click)="rechargerPrestations()" class="text-blue-600 hover:text-blue-800 underline text-sm">
+          Réessayer
+        </button>
+      </div>
+
+      <!-- Sélection de prestation -->
+      <div class="mb-4">
+        <label for="prestation" class="block text-sm font-medium text-gray-700 mb-2">
+          Prestation à ajouter *
+        </label>
+
+        <!-- Loader pour les prestations -->
+        <div *ngIf="loadingPrestations" class="flex items-center justify-center py-4">
+          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+          <span class="ml-2 text-gray-600 text-sm">Chargement des prestations...</span>
+        </div>
+
+        <!-- Select des prestations -->
+        <select *ngIf="!loadingPrestations"
+                id="prestation"
+                [(ngModel)]="selectedPrestationId"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option value="">Sélectionnez une prestation</option>
+          <option *ngFor="let prestation of prestationsDisponibles" [value]="prestation._id">
+            {{ prestation.nom }} - {{ prestation.prix_main_oeuvre }}Ar
+          </option>
+        </select>
+      </div>
+
+      <!-- Description de la prestation sélectionnée -->
+      <div *ngIf="selectedPrestationId && !loadingPrestations" class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+        <h4 class="font-medium text-blue-900">Détails de la prestation :</h4>
+        <p class="text-sm text-blue-800 mt-1">
+          {{ getDescriptionSelectionnee() }}
+        </p>
+        <p class="text-sm text-blue-800 mt-1">
+          <strong>Prix main d'œuvre :</strong> {{ getPrixSelectionnee() }} Ar
+        </p>
+      </div>
+
+      <!-- Motif -->
+      <div class="mb-6">
+        <label for="motif" class="block text-sm font-medium text-gray-700 mb-2">
+          Motif d'ajout (optionnel)
+        </label>
+        <textarea id="motif"
+                  [(ngModel)]="motif"
+                  rows="3"
+                  placeholder="Ex: Problème découvert pendant la réparation..."
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end space-x-3 p-6 border-t border-gray-200">
+      <button (click)="fermerModal()"
+              [disabled]="loading"
+              class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50">
+        Annuler
+      </button>
+      <button (click)="ajouterPrestation()"
+              [disabled]="isBoutonDesactive()"
+              class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50 flex items-center">
+        <div *ngIf="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+        {{ getTexteBouton() }}
+      </button>
+    </div>
+  </div>
+</div>

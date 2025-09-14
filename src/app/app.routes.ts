@@ -8,7 +8,7 @@ import { FormPrestationComponent } from './components/manager/service_propose/fo
 import { AvisComponent } from './components/client/avis/avis/avis.component';
 import { SuiviPrestationComponent } from './components/client/suivi-prestation/suivi-prestation/suivi-prestation.component';
 import { RendezvousListComponent } from './components/mecanicien/rendezvous-list/rendezvous-list.component';
-import { RendezvousDetailsComponent } from './components/mecanicien/rendezvous-details/rendezvous-details.component';
+// import { RendezvousDetailsComponent } from './components/mecanicien/rendezvous-details/rendezvous-details.component';
 import { DefaultLayoutComponent } from './components/layouts/default-layout/default-layout.component';
 import { PrestationDetailComponent } from './components/client/prestation-detail/prestation-detail.component';
 import { ManagerComponent } from './components/manager/manager.component';
@@ -63,6 +63,9 @@ export const routes: Routes = [
     { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
 
 
+    // { path: 'mecanicien/rendez-vous', component: RendezvousListComponent },
+
+
     { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
 
     {
@@ -85,8 +88,9 @@ export const routes: Routes = [
   {
     path: 'mecanicien', component: LayoutComponent,
     children: [
+      { path: '', redirectTo: 'rendez-vous', pathMatch: 'full' }, // Redirection par défaut
       { path: 'rendez-vous', component: RendezvousListComponent },
-      { path: 'rendez-vous/:id', component: RendezvousDetailsComponent}
+
     ]
   }
 

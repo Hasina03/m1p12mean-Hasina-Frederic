@@ -1,0 +1,132 @@
+<!-- Statistiques en temps réel -->
+<div class="bg-gradient-to-r from-blue-50 to-indigo-100 p-6 rounded-lg mb-6 shadow-sm">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold text-gray-900">Tableau de bord</h2>
+    <button (click)="actualiserStats()"
+            class="px-3 py-1 bg-white text-blue-600 text-sm font-medium rounded hover:bg-blue-50 transition-colors border border-blue-200">
+      🔄 Actualiser
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <span class="ml-2 text-gray-600">Chargement des statistiques...</span>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+    {{ error }}
+  </div>
+
+  <!-- Statistiques -->
+  <div *ngIf="!loading && !error && stats" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <!-- RDV Aujourd'hui -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-blue-100 rounded-lg">
+          📅
+        </div>
+        <div class="ml-3">
+          <div class="text-2xl font-bold text-blue-600">{{ stats.rendezvous.aujourd_hui }}</div>
+          <div class="text-sm text-gray-600">RDV aujourd'hui</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RDV En cours -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-orange-100 rounded-lg">
+          🔄
+        </div>
+        <div class="ml-3">
+          <div class="text-2xl font-bold text-orange-600">{{ stats.rendezvous.en_cours }}</div>
+          <div class="text-sm text-gray-600">En cours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RDV Terminés -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-green-100 rounded-lg">
+          ✅
+        </div>
+        <div class="ml-3">
+          <div class="text-2xl font-bold text-green-600">{{ stats.rendezvous.termines }}</div>
+          <div class="text-sm text-gray-600">Terminés</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Taux de completion -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-purple-100 rounded-lg">
+          📊
+        </div>
+        <div class="ml-3">
+          <div class="text-2xl font-bold" [ngClass]="getTauxCompletionClass(stats.prestations.taux_completion)">
+            {{ stats.prestations.taux_completion }}%
+          </div>
+          <div class="text-sm text-gray-600">Taux completion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques détaillées -->
+  <div *ngIf="!loading && !error && stats" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Prestations -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-2">🔧 Prestations</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-600">Total:</span>
+          <span class="font-medium">{{ stats.prestations.total }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Terminées:</span>
+          <span class="font-medium text-green-600">{{ stats.prestations.terminees }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">En cours:</span>
+          <span class="font-medium text-blue-600">{{ stats.prestations.en_cours }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Temps -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-2">⏱️ Temps de travail</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-600">Total:</span>
+          <span class="font-medium">{{ formatHeures(stats.temps.total_heures) }}h</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Moyenne/prestation:</span>
+          <span class="font-medium">{{ stats.temps.moyenne_par_prestation }}min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-2">🎯 Performance</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-600">RDV Total:</span>
+          <span class="font-medium">{{ stats.rendezvous.total }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Efficacité:</span>
+          <span class="font-medium" [ngClass]="getTauxCompletionClass(stats.prestations.taux_completion)">
+            {{ stats.prestations.taux_completion >= 80 ? 'Excellente' : stats.prestations.taux_completion >= 60 ? 'Bonne' : 'À améliorer' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
