@@ -7,7 +7,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 @Component({
   selector: 'app-liste-rendezvous',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule],
   templateUrl: './liste-rendezvous.component.html',
   styleUrl: './liste-rendezvous.component.css'
 })
@@ -22,12 +22,12 @@ export class ListeRendezvousComponent {
   selectedRendezvousId: string | null = null;
 
   isReporterModalOpen = false;
-page: number = 1;
+  page: number = 1;
 
   isModalOpen: boolean = false;
   selectedMecanicien: string = '';
-mecaniciensList: any[] = [];
-isMecanicienModalOpen = false;
+  mecaniciensList: any[] = [];
+  isMecanicienModalOpen = false;
 
   constructor(private rendezvousService: RendezvousService) {}
 
@@ -35,6 +35,20 @@ isMecanicienModalOpen = false;
     this.getRendezVous();
   }
 
+  // ===== STATISTIQUES DYNAMIQUES =====
+  get confirmedCount(): number {
+    return this.rendezVousList.filter(rdv =>
+      rdv.statut === 'Confirmé' || rdv.statut === 'confirmed' || rdv.statut === 'Confirmé'
+    ).length;
+  }
+
+  get pendingCount(): number {
+    return this.rendezVousList.filter(rdv =>
+      rdv.statut === 'En attente' || rdv.statut === 'pending' || rdv.statut === 'Attente'
+    ).length;
+  }
+
+  // ===== MÉTHODES DE DONNÉES =====
   getRendezVous() {
     this.rendezvousService.getRendezVous().subscribe(
       (data) => {
@@ -47,26 +61,52 @@ isMecanicienModalOpen = false;
     );
   }
 
+  // ===== MISE À JOUR AVEC STATISTIQUES DYNAMIQUES =====
   updatestatus(userId: string): void {
+    // 1. Mise à jour locale immédiate pour réactivité
+    const rdvIndex = this.rendezVousList.findIndex(rdv => rdv._id === userId);
+    if (rdvIndex !== -1) {
+      this.rendezVousList[rdvIndex].statut = 'Confirmé';
+      this.updateFilteredList();
+    }
+
+    // 2. Appel API
     this.rendezvousService.updateStatus(userId).subscribe(
       (response) => {
-        this.getRendezVous();
-        this.closeModal();
+        console.log('Statut confirmé avec succès');
+        // Optionnel: recharger depuis le serveur pour être sûr
+        // this.getRendezVous();
       },
       (error) => {
-        console.error('Erreur lors de la mise à jour du rôle', error);
+        console.error('Erreur lors de la mise à jour du statut', error);
+        // Reverser le changement local en cas d'erreur
+        if (rdvIndex !== -1) {
+          this.rendezVousList[rdvIndex].statut = 'En attente';
+          this.updateFilteredList();
+        }
       }
     );
   }
 
   updateDate(userId: string, newDate: string): void {
+    // 1. Mise à jour locale immédiate
+    const rdvIndex = this.rendezVousList.findIndex(rdv => rdv._id === userId);
+    if (rdvIndex !== -1) {
+      this.rendezVousList[rdvIndex].date_rdv = newDate;
+      this.rendezVousList[rdvIndex].statut = 'En attente'; // Reporter remet en attente
+      this.updateFilteredList();
+    }
+
+    // 2. Appel API
     this.rendezvousService.updateDateRendezVous(userId, newDate).subscribe(
       (response) => {
-        this.getRendezVous();
+        console.log('Date mise à jour avec succès');
         this.closeModal();
       },
       (error) => {
         console.error('Erreur lors de la mise à jour du rendez-vous', error);
+        // Reverser le changement en cas d'erreur
+        this.getRendezVous();
       }
     );
   }
@@ -80,37 +120,78 @@ isMecanicienModalOpen = false;
     }
   }
 
-filterRendezVous(): void {
-  if (this.searchTerm) {
-    const normalize = (str: string) =>
-      str
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
-    const searchWords = normalize(this.searchTerm).split(/\s+/);
+  // ===== ASSIGNATION MÉCANICIEN AVEC MISE À JOUR DYNAMIQUE =====
+  assignMecanicien() {
+    if (!this.selectedMecanicien) {
+      alert("Veuillez sélectionner un mécanicien.");
+      return;
+    }
 
-    this.filteredRendezVous = this.rendezVousList.filter(rdv => {
-      const nom = rdv.client_id?.nom || "";
-      const prenom = rdv.client_id?.prenom || "";
-      const statut = rdv.statut || "";
+    // 1. Mise à jour locale immédiate
+    const rdvIndex = this.rendezVousList.findIndex(rdv => rdv._id === this.selectedRendezvous._id);
+    if (rdvIndex !== -1) {
+      const mecanicien = this.mecaniciensList.find(m => m._id === this.selectedMecanicien);
+      this.rendezVousList[rdvIndex].mecanicien_id = mecanicien;
+      this.rendezVousList[rdvIndex].statut = 'Confirmé'; // Assigner confirme le RDV
+      this.updateFilteredList();
+    }
 
-      const combined = normalize(`${nom} ${prenom} ${statut}`);
-      return searchWords.every(word => combined.includes(word));
-    });
-  } else {
-    this.filteredRendezVous = [...this.rendezVousList];
+    // 2. Appel API
+    this.rendezvousService.assignMecanicienToRendezvous(this.selectedRendezvous._id, this.selectedMecanicien)
+      .subscribe(
+        (response) => {
+          console.log('Mécanicien assigné avec succès');
+          this.closeMecanicienModal();
+        },
+        (error) => {
+          console.error("Erreur lors de l'assignation du mécanicien :", error);
+          // Reverser en cas d'erreur
+          this.getRendezVous();
+        }
+      );
   }
 
-  console.log("Résultats filtrés :", this.filteredRendezVous);
-}
+  // ===== MÉTHODES DE FILTRAGE =====
+  updateFilteredList(): void {
+    if (this.searchTerm) {
+      this.filterRendezVous();
+    } else {
+      this.filteredRendezVous = [...this.rendezVousList];
+    }
+  }
 
+  filterRendezVous(): void {
+    if (this.searchTerm) {
+      const normalize = (str: string) =>
+        str
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim();
+      const searchWords = normalize(this.searchTerm).split(/\s+/);
+
+      this.filteredRendezVous = this.rendezVousList.filter(rdv => {
+        const nom = rdv.client_id?.nom || "";
+        const prenom = rdv.client_id?.prenom || "";
+        const statut = rdv.statut || "";
+        const mecanicienNom = rdv.mecanicien_id?.nom || "";
+        const mecanicienPrenom = rdv.mecanicien_id?.prenom || "";
+
+        const combined = normalize(`${nom} ${prenom} ${statut} ${mecanicienNom} ${mecanicienPrenom}`);
+        return searchWords.every(word => combined.includes(word));
+      });
+    } else {
+      this.filteredRendezVous = [...this.rendezVousList];
+    }
+
+    console.log("Résultats filtrés :", this.filteredRendezVous);
+  }
 
   onSearchTermChange(): void {
     this.filterRendezVous();
   }
 
-
+  // ===== GESTION DES MODALES =====
   openModal(vehicule: any) {
     this.selectedVehicule = vehicule;
     this.isModalOpen = true;
@@ -120,6 +201,7 @@ filterRendezVous(): void {
     this.selectedRendezvousId = rendezvousId;
     this.isReporterModalOpen = true;
   }
+
   closeReporterModal(): void {
     this.isReporterModalOpen = false;
     this.newDate = '';
@@ -142,27 +224,8 @@ filterRendezVous(): void {
     );
   }
 
-
   closeMecanicienModal() {
     this.isMecanicienModalOpen = false;
     this.selectedMecanicien = '';
-  }
-
-
-  assignMecanicien() {
-    if (!this.selectedMecanicien) {
-      alert("Veuillez sélectionner un mécanicien.");
-      return;
-    }
-    this.rendezvousService.assignMecanicienToRendezvous(this.selectedRendezvous._id, this.selectedMecanicien)
-      .subscribe(
-        (response) => {
-          this.closeMecanicienModal();
-          this.getRendezVous();
-        },
-        (error) => {
-          console.error("Erreur lors de l'assignation du mécanicien :", error);
-        }
-      );
   }
 }

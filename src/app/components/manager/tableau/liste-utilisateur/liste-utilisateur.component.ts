@@ -7,27 +7,28 @@ import { NgxPaginationModule } from 'ngx-pagination';
 @Component({
   selector: 'app-liste-utilisateur',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule],
   templateUrl: './liste-utilisateur.component.html',
   styleUrl: './liste-utilisateur.component.css'
 })
 export class ListeUtilisateurComponent {
-
   utilisateurs: any[] = [];
   filteredUtilisateurs: any[] = [];
   searchTerm: string = '';
   selectedUtilisateur: any;
   newRole: string = '';
   isRoleModalOpen: boolean = false;
-
-  page: number = 1; 
+  page: number = 1;
   itemsPerPage: number = 10;
+  showNotification: boolean = false;
+  notificationMessage: string = '';
 
   constructor(private utilisateurService: UtilisateurService) {}
 
   ngOnInit(): void {
     this.getUtilisateurs();
   }
+
   filterUtilisateurs(): void {
     if (this.searchTerm) {
       this.filteredUtilisateurs = this.utilisateurs.filter(utilisateur =>
@@ -38,6 +39,17 @@ export class ListeUtilisateurComponent {
     } else {
       this.filteredUtilisateurs = [...this.utilisateurs];
     }
+  }
+
+  showSuccessNotification(message: string): void {
+    this.notificationMessage = message;
+    this.showNotification = true;
+
+    // Masquer automatiquement après 3 secondes
+    setTimeout(() => {
+      this.showNotification = false;
+      this.notificationMessage = '';
+    }, 3000);
   }
 
   onSearchTermChange(): void {
@@ -55,12 +67,12 @@ export class ListeUtilisateurComponent {
       }
     );
   }
+
   openRoleModal(utilisateur: any): void {
     this.selectedUtilisateur = utilisateur;
     this.isRoleModalOpen = true;
     this.newRole = utilisateur.role;
   }
-
 
   closeRoleModal(): void {
     this.isRoleModalOpen = false;
@@ -73,6 +85,8 @@ export class ListeUtilisateurComponent {
       (response) => {
         this.getUtilisateurs();
         this.closeRoleModal();
+        // Ajouter la notification de succès
+        this.showSuccessNotification(`Rôle mis à jour avec succès vers ${newRole}`);
       },
       (error) => {
         console.error('Erreur lors de la mise à jour du rôle', error);
@@ -84,20 +98,39 @@ export class ListeUtilisateurComponent {
     const userDetails = this.utilisateurService.getUserIdFromToken();
     if (userDetails) {
       if (userDetails.role === 'manager') {
-        this.utilisateurService.deleteutilisateur(userId).subscribe(
-          (response) => {
-            this.getUtilisateurs();
-          },
-          (error) => {
-            console.error('Erreur lors de la suppression de l utilisateur', error);
-          }
-        );
+        // Optionnel : ajouter une confirmation avant suppression
+        if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+          this.utilisateurService.deleteutilisateur(userId).subscribe(
+            (response) => {
+              this.getUtilisateurs();
+              // Ajouter la notification de succès
+              this.showSuccessNotification('Utilisateur supprimé avec succès');
+            },
+            (error) => {
+              console.error('Erreur lors de la suppression de l utilisateur', error);
+            }
+          );
+        }
       } else {
         console.error('Permission insuffisante : L\'utilisateur doit avoir le rôle manager');
+        alert('Permission insuffisante : Seuls les managers peuvent supprimer des utilisateurs');
       }
     } else {
       console.error('Utilisateur non authentifié');
+      alert('Erreur : Utilisateur non authentifié');
     }
   }
-}
 
+  // Nouvelles méthodes pour les statistiques
+  getManagersCount(): number {
+    return this.utilisateurs.filter(user => user.role === 'manager').length;
+  }
+
+  getMecaniciensCount(): number {
+    return this.utilisateurs.filter(user => user.role === 'mecanicien').length;
+  }
+
+  getClientsCount(): number {
+    return this.utilisateurs.filter(user => user.role === 'client').length;
+  }
+}

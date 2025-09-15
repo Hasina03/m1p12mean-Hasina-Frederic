@@ -36,7 +36,7 @@ this.loadUtilisateur());
           if (userDetails) {
             switch (userDetails.role) {
               case 'manager':
-                this.router.navigate(['/manager']);
+                this.router.navigate(['/manager/dashboard']);
                 break;
               case 'mecanicien':
                 this.router.navigate(['/mecanicien']);

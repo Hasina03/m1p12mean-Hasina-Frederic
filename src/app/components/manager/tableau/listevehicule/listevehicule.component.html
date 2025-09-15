@@ -1,45 +1,60 @@
 <div class="max-w-[1200px] mx-auto">
-  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border min-h-[400px]">
-    <div class="flex items-center justify-between p-4">
-      <h2 class="text-lg font-semibold text-slate-700">Liste des véhicules</h2>
+  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-lg rounded-xl bg-clip-border min-h-[400px]">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-gray-700 to-gray-900 rounded-t-xl">
+      <h2 class="text-lg font-semibold text-white">Liste des véhicules</h2>
       <input
         type="text"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchTermChange()"
-        placeholder="Rechercher par marque/modele..."
-        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
+        placeholder="Rechercher par marque/modèle..."
+        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
 
-    <div class="p-0 overflow-scroll h-[500px]">
+    <!-- Table -->
+    <div class="p-0 overflow-auto h-[500px]">
       <table class="w-full mt-4 text-left table-auto min-w-max">
         <thead>
-          <tr class="bg-slate-50 border-y border-slate-200">
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Marque</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Modèle</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Année</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Type carburant</th>
-            <th class="p-4 text-base font-normal text-slate-500 text-center">Actions</th>
-
+          <tr class="bg-gray-100 border-b border-gray-300">
+            <th class="p-4 text-base font-semibold text-gray-700 text-center">Marque</th>
+            <th class="p-4 text-base font-semibold text-gray-700 text-center">Modèle</th>
+            <th class="p-4 text-base font-semibold text-gray-700 text-center">Année</th>
+            <th class="p-4 text-base font-semibold text-gray-700 text-center">Type carburant</th>
+            <th class="p-4 text-base font-semibold text-gray-700 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let vehicule of filteredVehicules | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-slate-200 hover:bg-slate-100">
-            <td class="p-4 text-base text-slate-700 text-center">{{ vehicule.marque }}</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ vehicule.modele }}</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ vehicule.annee }}</td>
-            <td class="p-4 text-base text-slate-700 text-center">{{ vehicule.type_moteur }}</td>
-            <td class="p-4 text-base text-slate-700 text-center flex justify-center space-x-2">
-              <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs" (click)="deleteVehicule(vehicule._id)">Supprimer</button>
+          <tr *ngFor="let vehicule of filteredVehicules | paginate: { itemsPerPage: itemsPerPage, currentPage: page }" class="border-b border-gray-200 hover:bg-gray-50">
+
+            <!-- Marque -->
+            <td class="p-4 text-base text-gray-800 text-center">{{ vehicule.marque }}</td>
+
+            <!-- Modèle -->
+            <td class="p-4 text-base text-gray-800 text-center">{{ vehicule.modele }}</td>
+
+            <!-- Année -->
+            <td class="p-4 text-base text-gray-800 text-center">{{ vehicule.annee }}</td>
+
+            <!-- Type carburant -->
+            <td class="p-4 text-base text-gray-800 text-center">{{ vehicule.type_moteur }}</td>
+
+            <!-- Actions -->
+            <td class="p-4 text-base text-gray-800 text-center flex justify-center space-x-2">
+              <button class="btn-danger" (click)="deleteVehicule(vehicule._id)">Supprimer</button>
             </td>
+
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="flex items-center justify-between p-3">
-      <p class="block text-base text-slate-500">Page {{ page }} de {{ (filteredVehicules.length  / itemsPerPage) | number: '1.0-0' }}</p>
+    <!-- Pagination -->
+    <div class="flex items-center justify-between px-6 py-3 bg-gray-50 rounded-b-xl">
+      <p class="text-gray-500 text-sm">Page {{ page }} de {{ (filteredVehicules.length / itemsPerPage) | number: '1.0-0' }}</p>
       <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
     </div>
+
   </div>
 </div>

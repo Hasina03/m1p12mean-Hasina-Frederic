@@ -1,121 +1,94 @@
-<div class="flex h-screen overflow-hidden">
+<div class="app-container">
   <!-- Sidebar -->
-  <div class="w-64 bg-[#f8f4f3] p-4 z-30 sidebar-menu transition-transform fixed md:relative md:translate-x-0 h-full">
-    <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
-      <h2 class="font-bold text-2xl">Garage <span class="bg-[#f84525] text-white px-2 rounded-md">HF</span></h2>
+  <div class="sidebar-menu">
+    <a class="logo">
+      <h2>
+        Garage <span>HF</span>
+      </h2>
     </a>
-    <ul class="mt-4">
-      <span class="text-gray-400 font-bold">ADMIN</span>
-      <li class="mb-1 group">
-        <a routerLink="dashboard" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Dashboard</span>
-        </a>
-      </li>
-      <li class="mb-1 group">
-        <a routerLink="/manager/listerendezvous" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Liste rendezvous</span>
-        </a>
-      </li>
-      <li class="mb-1 group">
-        <a routerLink="/manager/listeUtilisateur" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Liste Utilisateurs</span>
-        </a>
-      </li>
-      <li class="mb-1 group relative">
-        <button (click)="toggleMenu('stock')" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Stock</span>
-        </button>
+    <ul class="menu">
+      <span class="menu-title">ADMIN</span>
 
-        <!-- Sous-menu pour le Stock -->
-        <ul *ngIf="isStockMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
-           <li>
-              <a routerLink="/manager/listepiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-                <span class="text-sm">Liste des pièces</span>
-              </a>
-            </li>
-          <li>
-            <a routerLink="/manager/ajoutpiece" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-              <span class="text-sm">Ajout pièce</span>
-            </a>
-          </li>
+      <li>
+        <a routerLink="dashboard" class="menu-link">
+          <i class="ri-home-2-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/manager/listerendezvous" routerLinkActive="router-link-active" class="menu-link">
+          <i class="ri-calendar-line"></i>
+          <span>Liste rendezvous</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/manager/listeUtilisateur" class="menu-link">
+          <i class="ri-user-line"></i>
+          <span>Liste Utilisateurs</span>
+        </a>
+      </li>
+
+      <li class="has-submenu">
+        <button (click)="toggleMenu('stock')" class="menu-link">
+          <i class="ri-box-line"></i>
+          <span>Stock</span>
+          <i class="ri-arrow-down-s-line" [class.rotate-180]="isStockMenuVisible"></i>
+        </button>
+        <ul *ngIf="isStockMenuVisible" class="submenu">
+          <li><a routerLink="/manager/listepiece" class="submenu-link">Liste des pièces</a></li>
+          <li><a routerLink="/manager/ajoutpiece" class="submenu-link">Ajout pièce</a></li>
         </ul>
       </li>
 
-      <li class="mb-1 group relative">
-        <button (click)="toggleMenu('prestation')" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Prestations</span>
+      <li class="has-submenu">
+        <button (click)="toggleMenu('prestation')" class="menu-link">
+          <i class="ri-tools-line"></i>
+          <span>Prestations</span>
+          <i class="ri-arrow-down-s-line" [class.rotate-180]="isPrestationMenuVisible"></i>
         </button>
-
-        <!-- Sous-menu pour le Prestation -->
-        <ul *ngIf="isPrestationMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
-          <li class="mb-1 group">
-            <a routerLink="/manager/prestations" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-              <span class="text-sm">Liste des prestation</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/manager/prestations/add" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-              <span class="text-sm">Creer prestation</span>
-            </a>
-          </li>
+        <ul *ngIf="isPrestationMenuVisible" class="submenu">
+          <li><a routerLink="/manager/prestations" class="submenu-link">Liste des prestations</a></li>
+          <li><a routerLink="/manager/prestations/add" class="submenu-link">Créer prestation</a></li>
         </ul>
       </li>
 
-      <li class="mb-1 group relative">
-        <button (click)="toggleMenu('vehicules')" class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-          <i class="ri-home-2-line mr-3 text-lg"></i>
-          <span class="text-sm">Véhicules</span>
+      <li class="has-submenu">
+        <button (click)="toggleMenu('vehicules')" class="menu-link">
+          <i class="ri-car-line"></i>
+          <span>Véhicules</span>
+          <i class="ri-arrow-down-s-line" [class.rotate-180]="isMenuVisible"></i>
         </button>
-
-        <!-- Sous-menu pour les Véhicules -->
-        <ul *ngIf="isMenuVisible" class="relative mt-2 space-y-2 w-full bg-[#f8f4f3] text-gray-900 rounded-md p-2">
-          <li class="mb-1 group">
-            <a routerLink="/manager/listevehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-              <span class="text-sm">Liste des véhicules</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/manager/ajoutvehicule" class="flex font-semibold items-center py-2 px-10 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md">
-              <span class="text-sm">Ajout véhicule</span>
-            </a>
-          </li>
+        <ul *ngIf="isMenuVisible" class="submenu">
+          <li><a routerLink="/manager/listevehicule" class="submenu-link">Liste des véhicules</a></li>
+          <li><a routerLink="/manager/ajoutvehicule" class="submenu-link">Ajout véhicule</a></li>
         </ul>
       </li>
-
     </ul>
   </div>
 
   <!-- Main content -->
-   <main class="flex-1 bg-gray-200 h-screen flex flex-col">
-
+  <main class="main-content">
     <!-- Navbar -->
-    <div class="py-2 px-6 bg-[#f8f4f3] flex items-center shadow-md shadow-black/5 sticky top-0 z-20">
-      <ul class="flex items-center ml-auto">
-        <li class="dropdown ml-3 relative"> <!-- relative position for parent element -->
-          <button type="button" class="dropdown-toggle flex items-center" (click)="toggleDropdown()">
-            <div class="flex-shrink-0 w-10 h-10 relative">
-              <div class="p-1 bg-white rounded-full focus:outline-none focus:ring">
-                <img class="w-8 h-8 rounded-full" src="https://media.istockphoto.com/id/1495088043/fr/vectoriel/ic%C3%B4ne-de-profil-utilisateur-avatar-ou-ic%C3%B4ne-de-personne-photo-de-profil-symbole-portrait.jpg?s=612x612&w=0&k=20&c=moNRZjYtVpH-I0mAe-ZfjVkuwgCOqH-BRXFLhQkZoP8=" alt=""/>
-                <div class="top-0 left-7 absolute w-3 h-3 bg-lime-400 border-2 border-white rounded-full animate-ping"></div>
-                <div class="top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full"></div>
-              </div>
+    <div class="navbar">
+      <ul>
+        <li class="dropdown">
+          <button type="button" class="dropdown-toggle" (click)="toggleDropdown()">
+            <div class="avatar">
+              <img src="https://media.istockphoto.com/id/1495088043/fr/vectoriel/ic%C3%B4ne-de-profil-utilisateur-avatar-ou-ic%C3%B4ne-de-personne-photo-de-profil-symbole-portrait.jpg?s=612x612&w=0&k=20&c=moNRZjYtVpH-I0mAe-ZfjVkuwgCOqH-BRXFLhQkZoP8=" alt="Avatar"/>
+              <div class="status-indicator online"></div>
+              <div class="status-indicator-ping online"></div>
             </div>
-            <div class="p-2 md:block text-left">
-              <h2 class="text-sm font-semibold text-gray-800">{{ user.name || 'Utilisateur' }}</h2>
-              <p class="text-xs text-gray-500">{{ user.role || 'Rôle inconnu' }}</p>
+            <div class="user-info">
+              <h2>{{ user.name || 'Utilisateur' }}</h2>
+              <p>{{ user.role || 'Rôle inconnu' }}</p>
             </div>
           </button>
-          <ul class="dropdown-menu shadow-md shadow-black/5 z-30 py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-1 transition-all"
-              *ngIf="isDropdownOpen">
+          <ul *ngIf="isDropdownOpen" class="dropdown-menu">
             <li>
-              <a role="menuitem" class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
-                 (click)="logout()">
-                Log Out
+              <a role="menuitem" class="dropdown-link" (click)="logout()">
+                <i class="ri-logout-box-line"></i> Log Out
               </a>
             </li>
           </ul>
@@ -123,8 +96,8 @@
       </ul>
     </div>
 
-    <div class="p-6 h-full overflow-auto">
-
+    <!-- Router Outlet -->
+    <div class="content">
       <router-outlet></router-outlet>
     </div>
   </main>

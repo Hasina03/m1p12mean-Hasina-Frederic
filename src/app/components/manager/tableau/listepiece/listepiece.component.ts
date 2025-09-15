@@ -9,6 +9,9 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 
+import { Router } from '@angular/router';
+
+
 @Component({
   selector: 'app-listepiece',
   standalone: true,
@@ -34,7 +37,7 @@ export class ListepieceComponent {
   mecaniciensList: any[] = [];
   isMecanicienModalOpen = false;
 
-    constructor(private rendezvousService: RendezvousService,private utilisateurservice: UtilisateurService) {}
+    constructor(private rendezvousService: RendezvousService,private utilisateurservice: UtilisateurService, private router: Router) {}
 
     ngOnInit() {
       const token = localStorage.getItem('token');
@@ -316,4 +319,8 @@ export class ListepieceComponent {
           }
         );
     }
+
+voirAmelioration(rdvId: string) {
+  this.router.navigate([`/rendez-vous/${rdvId}/suivi-prestations`]);
+}
 }

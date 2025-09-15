@@ -1,158 +1,273 @@
-<div class="p-6 bg-white shadow-lg rounded-lg h-[600px] ">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Liste des Rendez-vous</h2>
-  <div class="flex justify-between items-center mb-4">
-    <input
-      type="text"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearchTermChange()"
-      placeholder="Rechercher par nom/statut..."
-      class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
-    />
-  </div>
-  <div class="overflow-auto h-[calc(100%_-_100px)]">
-  <table class="w-full border border-gray-300 rounded-lg overflow-hidden shadow-md">
-    <thead class="bg-gray-200 text-gray-700">
-      <tr>
-        <th class="px-4 py-3 border">Nom</th>
-        <th class="px-4 py-3 border">Date</th>
-        <th class="px-4 py-3 border">Prestation</th>
-        <th class="px-4 py-3 border">Status</th>
-        <th class="px-4 py-3 border">Mécanicien</th>
-        <th class="px-4 py-3 border">Détails du véhicule</th>
-        <th class="px-4 py-3 border">Actions</th>
-      </tr>
-    </thead>
-    <tbody class="text-gray-600">
-      <tr class="hover:bg-gray-100 transition" *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
-        <td class="px-4 py-3 border whitespace-nowrap">
-          {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
-        </td>
 
 
-        <td class="px-4 py-3 border">{{ rendezvous.date_rdv | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="px-4 py-3 border">
-          <ul class="list-disc pl-4">
-            <li *ngFor="let prestation of rendezvous.prestations">
-              {{ prestation.prestation_id?.nom }} -  : {{ prestation.statuts?.En_attente | date:'dd/MM/yyyy HH:mm' }}
-            </li>
-          </ul>
-        </td>
-        <td class="px-4 py-3 border">{{ rendezvous.statut }}</td>
-        <td class="px-4 py-3 border whitespace-nowrap">
-          {{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}
-        </td>
-        <td class="px-4 py-3 border text-center">
-          <button (click)="openModal(rendezvous.vehicule_id)"
-                  class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition">
-            Voir Détails
-          </button>
-        </td>
-        <td class="px-4 py-3 border text-center">
-          <button class="bg-blue-500 text-white px-3 py-1 rounded-md" (click)="updatestatus(rendezvous._id)">Valider</button>
-          <button class="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600 transition"
-          (click)="openReporterModal(rendezvous._id)">Reporter</button>
-          <button (click)="openMecanicienModal(rendezvous)"
-          class="bg-blue-500 text-white px-1 py-1 rounded ml-2 mt-2 transition">
-            + Mécanicien
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<!-- Container principal -->
+<div class="max-w-7xl mx-auto px-6 pb-12">
+
+    <!-- Carte principale avec glassmorphism -->
+    <div class="glass-card shadow-premium rounded-3xl p-8 lg:p-10 animate-fade-scale">
+
+        <!-- Barre de recherche premium -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="w-5 h-5 text-gray-400">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <input
+                        type="text"
+                        [(ngModel)]="searchTerm"
+                        (ngModelChange)="onSearchTermChange()"
+                        placeholder="Rechercher par nom, statut, mécanicien..."
+                        class="w-full pl-12 pr-4 py-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all duration-300"
+                    />
+                </div>
+            </div>
+
+            <!-- Statistiques rapides -->
+<div class="flex gap-4">
+    <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-elegant stats-card">
+        <div class="text-sm font-medium opacity-90">Confirmés</div>
+        <div class="text-2xl font-bold" [class.animate-pulse-value]="true">{{ confirmedCount }}</div>
+    </div>
+    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 text-white px-6 py-3 rounded-2xl shadow-elegant stats-card">
+        <div class="text-sm font-medium opacity-90">En attente</div>
+        <div class="text-2xl font-bold" [class.animate-pulse-value]="true">{{ pendingCount }}</div>
+    </div>
+    <!-- Optionnel: Total -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-2xl shadow-elegant stats-card">
+        <div class="text-sm font-medium opacity-90">Total</div>
+        <div class="text-2xl font-bold" [class.animate-pulse-value]="true">{{ rendezVousList.length }}</div>
+    </div>
 </div>
-<div class="flex items-center justify-between p-3">
-  <p class="block text-sm text-slate-500">
-    Page {{ page }} de {{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}
-  </p>
-  <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+        </div>
+
+        <!-- Table moderne avec glassmorphism -->
+        <div class="overflow-hidden rounded-2xl modern-table animate-fade-scale">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="px-6 py-5 text-left font-semibold tracking-wide">Client</th>
+                            <th class="px-6 py-5 text-left font-semibold tracking-wide">Date & Heure</th>
+                            <th class="px-6 py-5 text-left font-semibold tracking-wide">Prestations</th>
+                            <th class="px-6 py-5 text-left font-semibold tracking-wide">Statut</th>
+                            <th class="px-6 py-5 text-left font-semibold tracking-wide">Mécanicien</th>
+                            <th class="px-6 py-5 text-center font-semibold tracking-wide">Véhicule</th>
+                            <th class="px-6 py-5 text-center font-semibold tracking-wide">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white/70 backdrop-blur-sm divide-y divide-gray-200/50">
+                        <tr class="table-row hover-lift" *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                        {{ rendezvous.client_id?.nom?.charAt(0) }}{{ rendezvous.client_id?.prenom?.charAt(0) }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">
+                                            {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">Client Premium</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-5">
+                                <div class="text-gray-900 font-medium">{{ rendezvous.date_rdv | date:'dd/MM/yyyy' }}</div>
+                                <div class="text-sm text-gray-500">{{ rendezvous.date_rdv | date:'HH:mm' }}</div>
+                            </td>
+
+                            <td class="px-6 py-5">
+                                <div class="space-y-1">
+                                    <div *ngFor="let prestation of rendezvous.prestations" class="flex items-center gap-2">
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                        <span class="text-sm font-medium text-gray-700">{{ prestation.prestation_id?.nom }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-5">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium status-confirmed">
+                                    {{ rendezvous.statut }}
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-900">
+                                        {{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-5 text-center">
+                                <button (click)="openModal(rendezvous.vehicule_id)"
+                                        class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-medium transition-all duration-300 hover-glow">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    Détails
+                                </button>
+                            </td>
+
+                            <td class="px-6 py-5">
+                                <div class="flex flex-wrap gap-2 justify-center">
+                                    <button class="btn-success text-white px-4 py-2 rounded-xl font-medium transition-all duration-300 text-sm"
+                                            (click)="updatestatus(rendezvous._id)">
+                                        ✓ Valider
+                                    </button>
+                                    <button class="btn-danger text-white px-4 py-2 rounded-xl font-medium transition-all duration-300 text-sm"
+                                            (click)="openReporterModal(rendezvous._id)">
+                                        ⏰ Reporter
+                                    </button>
+                                    <button class="btn-primary text-white px-3 py-2 rounded-xl font-medium transition-all duration-300 text-sm"
+                                            (click)="openMecanicienModal(rendezvous)">
+                                        + Mécanicien
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination premium -->
+        <div class="flex items-center justify-between mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-2xl">
+            <p class="text-sm text-slate-600 font-medium">
+                Page {{ page }} de {{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}
+                <span class="text-slate-400">• {{ filteredRendezVous.length }} rendez-vous total</span>
+            </p>
+            <pagination-controls (pageChange)="page = $event"
+                               previousLabel="Précédent"
+                               nextLabel="Suivant"
+                               class="flex items-center gap-2">
+            </pagination-controls>
+        </div>
+    </div>
 </div>
 
+<!-- Modal Véhicule Premium -->
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="glass-modal shadow-premium rounded-3xl w-full max-w-2xl modal-content">
+        <div class="p-8">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h5 class="text-2xl font-bold gradient-text">Détails du Véhicule</h5>
+                        <p class="text-gray-600">Informations techniques complètes</p>
+                    </div>
+                </div>
+                <button type="button" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors" (click)="closeModal()">
+                    <span class="text-xl text-gray-600">&times;</span>
+                </button>
+            </div>
 
-<!-- Modal Véhicule -->
-<div *ngIf="isModalOpen"
-     class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
-    <div class="flex justify-between items-center">
-      <h5 class="text-xl font-semibold">Détails du Véhicule</h5>
-      <button type="button" class="text-gray-500" (click)="closeModal()">
-        <span class="text-2xl">&times;</span>
-      </button>
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-elegant" *ngIf="selectedVehicule">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+                    <div class="p-6 border-b md:border-b-0 md:border-r border-gray-200/50">
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Marque</div>
+                        <div class="text-xl font-bold text-gray-900">{{ selectedVehicule?.marque }}</div>
+                    </div>
+                    <div class="p-6 border-b md:border-b-0 border-gray-200/50">
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Modèle</div>
+                        <div class="text-xl font-bold text-gray-900">{{ selectedVehicule?.modele }}</div>
+                    </div>
+                    <div class="p-6 border-r border-gray-200/50">
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Année</div>
+                        <div class="text-xl font-bold text-gray-900">{{ selectedVehicule?.annee }}</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Type Moteur</div>
+                        <div class="text-xl font-bold text-gray-900">{{ selectedVehicule?.type_moteur }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mt-4">
-      <table class="w-full table-auto border-collapse border border-gray-300">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-4 py-2 text-left">Champ</th>
-            <th class="px-4 py-2 text-left">Détail</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="selectedVehicule">
-          <tr>
-            <td class="border px-4 py-2"><strong>Marque</strong></td>
-            <td class="border px-4 py-2">{{ selectedVehicule?.marque }}</td>
-          </tr>
-          <tr>
-            <td class="border px-4 py-2"><strong>Modèle</strong></td>
-            <td class="border px-4 py-2">{{ selectedVehicule?.modele }}</td>
-          </tr>
-          <tr>
-            <td class="border px-4 py-2"><strong>Année</strong></td>
-            <td class="border px-4 py-2">{{ selectedVehicule?.annee }}</td>
-          </tr>
-          <tr>
-            <td class="border px-4 py-2"><strong>Type_moteur</strong></td>
-            <td class="border px-4 py-2">{{ selectedVehicule?.type_moteur }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
 
-<!-- Modal Ajout Mécanicien -->
-<div *ngIf="isMecanicienModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-  <div class="bg-white p-6 rounded-lg shadow-md w-1/4">
-    <h3 class="text-lg font-semibold text-slate-700 mb-4">
-      Ajouter un mécanicien pour le rendez-vous
-    </h3>
-    <div>
-      <label for="mecanicien" class="block text-sm font-medium text-gray-700">
+<!-- Modal Ajout Mécanicien Premium -->
+<div *ngIf="isMecanicienModalOpen" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="glass-modal shadow-premium rounded-3xl w-full max-w-md modal-content">
+        <div class="p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold gradient-text mb-2">Assigner un Mécanicien</h3>
+                <p class="text-gray-600">Sélectionnez le technicien pour ce rendez-vous</p>
+            </div>
 
-      </label>
-      <select id="mecanicien" [(ngModel)]="selectedMecanicien" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md">
-        <option value="" disabled selected>Sélectionner un mécanicien</option>
-        <option *ngFor="let mecano of mecaniciensList" [value]="mecano._id">
-          {{ mecano.nom }}
-        </option>
-      </select>
+            <div class="mb-8">
+                <label class="block text-sm font-semibold text-gray-700 mb-3">Mécanicien Disponible</label>
+                <select [(ngModel)]="selectedMecanicien"
+                        class="w-full px-4 py-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-green-500/20 focus:border-green-500/50 transition-all duration-300">
+                    <option value="" disabled selected>Choisir un mécanicien expert</option>
+                    <option *ngFor="let mecano of mecaniciensList" [value]="mecano._id">
+                        {{ mecano.nom }} - Expert Certifié
+                    </option>
+                </select>
+            </div>
+
+            <div class="flex gap-4">
+                <button class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-4 px-6 rounded-2xl transition-all duration-300"
+                        (click)="closeMecanicienModal()">
+                    Annuler
+                </button>
+                <button class="flex-1 btn-success text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300"
+                        (click)="assignMecanicien()">
+                    ✓ Assigner
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="mt-4 flex justify-center gap-x-2">
-      <button class="bg-gray-300 px-4 py-2 rounded-md" (click)="closeMecanicienModal()">Annuler</button>
-      <button class="bg-green-500 text-white px-4 py-2 rounded-md" (click)="assignMecanicien()">Valider</button>
-    </div>
-  </div>
 </div>
 
-<!-- Modal Reporter -->
-<div *ngIf="isReporterModalOpen"
-     class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
-    <div class="flex justify-between items-center">
-      <h5 class="text-xl font-semibold">Reporter le rendez-vous</h5>
-      <button type="button" class="text-gray-500" (click)="closeReporterModal()">
-        <span class="text-2xl">&times;</span>
-      </button>
+<!-- Modal Reporter Premium -->
+<div *ngIf="isReporterModalOpen" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="glass-modal shadow-premium rounded-3xl w-full max-w-md modal-content">
+        <div class="p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold gradient-text mb-2">Reporter le Rendez-vous</h3>
+                <p class="text-gray-600">Choisissez une nouvelle date et heure</p>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-sm font-semibold text-gray-700 mb-3">Nouvelle Date & Heure</label>
+                <input type="datetime-local"
+                       [(ngModel)]="newDate"
+                       class="w-full px-4 py-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all duration-300" />
+            </div>
+
+            <div class="flex gap-4">
+                <button class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-4 px-6 rounded-2xl transition-all duration-300"
+                        (click)="closeReporterModal()">
+                    Annuler
+                </button>
+                <button class="flex-1 btn-danger text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300"
+                        (click)="updateRendezVousDate()">
+                    ⏰ Reporter
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="mt-4">
-      <label for="newDate" class="block text-sm font-medium text-gray-700">Sélectionner une nouvelle date</label>
-      <input type="datetime-local" id="newDate" [(ngModel)]="newDate" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md" />
-    </div>
-    <div class="mt-4 flex justify-center gap-x-2">
-      <button class="bg-gray-300 px-4 py-2 rounded-md" (click)="closeReporterModal()">Annuler</button>
-      <button class="bg-green-500 text-white px-4 py-2 rounded-md" (click)="updateRendezVousDate()">Valider</button>
-    </div>
-  </div>
 </div>
-
-
-
