@@ -122,8 +122,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-
 .sidebar-menu .logo h2 span {
   background: var(--hover-bg);
   color: white;
@@ -136,6 +134,7 @@
   animation: glow 3s ease-in-out infinite;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
+  z-index: 1; /* AJOUTÉ pour que le texte soit visible */
 }
 
 .sidebar-menu .logo h2 span::before {
@@ -147,6 +146,7 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: shimmer 3s infinite;
+  z-index: 0; /* AJOUTÉ pour que l'animation soit derrière le texte */
 }
 
 .sidebar-menu .logo h2 span:hover {
