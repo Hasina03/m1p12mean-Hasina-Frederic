@@ -1,26 +1,217 @@
-<div class="container mx-auto p-6">
-    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Suivi des Prestations</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full border-collapse bg-white shadow-md rounded-lg">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="px-4 py-2 text-left">Prestation</th>
-            <th class="px-4 py-2 text-left">Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let prestation of prestations" class="border-b">
-            <td class="px-4 py-2">{{ prestation.prestation }}</td>
-            <td class="px-4 py-2 font-bold" [ngClass]="{
-              'text-yellow-500': prestation.statut === 'En attente',
-              'text-blue-500': prestation.statut === 'En cours',
-              'text-red-500': prestation.statut === 'Annulé',
-              'text-green-500': prestation.statut === 'Terminé'
-            }">
-              {{ prestation.statut }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="container mx-auto p-6 max-w-4xl">
+
+  <!-- Message de succès -->
+  <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex justify-between items-center">
+    <span>{{ successMessage }}</span>
+    <button (click)="fermerSuccessMessage()" class="text-green-700 hover:text-green-900">×</button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <span class="ml-3 text-gray-600">Chargement du suivi...</span>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error && !loading" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+    {{ error }}
+    <button (click)="chargerSuiviRendezVous()" class="ml-4 underline hover:no-underline">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading && !error && rendezVousData" class="space-y-6">
+
+    <!-- En-tête -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Suivi de réparation</h1>
+          <p class="text-gray-600">Rendez-vous du {{ formatDate(rendezVousData.date_rdv) }}</p>
+        </div>
+        <button (click)="retourListeRendezVous()"
+                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          ← Retour
+        </button>
+      </div>
+
+      <!-- Informations générales -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="font-medium text-gray-700">Véhicule:</span>
+          <span class="ml-2">{{ rendezVousData.vehicule }}</span>
+        </div>
+        <div>
+          <span class="font-medium text-gray-700">Mécanicien:</span>
+          <span class="ml-2">{{ rendezVousData.mecanicien }}</span>
+        </div>
+        <div>
+          <span class="font-medium text-gray-700">Statut:</span>
+          <span class="ml-2 px-2 py-1 rounded text-xs font-medium"
+                [ngClass]="getStatutClass(rendezVousData.statut)">
+            {{ rendezVousData.statut }}
+          </span>
+        </div>
+        <div>
+          <span class="font-medium text-gray-700">Progression:</span>
+          <span class="ml-2">{{ rendezVousData.progression.pourcentage }}%</span>
+        </div>
+      </div>
+
+      <!-- Barre de progression -->
+      <div class="mt-4">
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div class="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300"
+               [style.width.%]="rendezVousData.progression.pourcentage"></div>
+        </div>
+        <p class="text-sm text-gray-600 mt-1">
+          {{ rendezVousData.progression.prestations_terminees }} / {{ rendezVousData.progression.total_prestations }} prestations terminées
+        </p>
+      </div>
+    </div>
+
+    <!-- Liste des prestations -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="px-6 py-4 bg-gray-50 border-b">
+        <h2 class="text-xl font-semibold text-gray-900">Prestations</h2>
+      </div>
+
+      <div class="divide-y divide-gray-200">
+        <div *ngFor="let prestation of rendezVousData.prestations"
+             class="p-6 hover:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3 mb-2">
+                <span class="text-2xl">{{ getStatutIcon(prestation.statut_actuel) }}</span>
+                <h3 class="font-semibold text-gray-900">{{ prestation.prestation.nom }}</h3>
+                <span class="px-2 py-1 rounded text-xs font-medium"
+                      [ngClass]="getStatutClass(prestation.statut_actuel)">
+                  {{ prestation.statut_actuel }}
+                </span>
+              </div>
+
+              <p class="text-gray-600 text-sm mb-2">{{ prestation.prestation.description }}</p>
+
+              <div class="flex space-x-4 text-xs text-gray-500">
+                <span>Prix: {{ prestation.prestation.prix_main_oeuvre }} Ar</span>
+                <span *ngIf="prestation.derniere_modification">
+                  Dernière mise à jour: {{ formatDate(prestation.derniere_modification) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section avis client -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Votre avis</h2>
+
+      <!-- Avis déjà donné -->
+      <div *ngIf="rendezVousData.avis_client && rendezVousData.avis_client.note" class="space-y-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-medium text-gray-700">Note:</span>
+          <div class="flex space-x-1">
+            <span *ngFor="let etoile of getEtoiles(rendezVousData.avis_client.note)"
+                  class="text-yellow-400 text-lg">
+              {{ etoile <= rendezVousData.avis_client.note ? '★' : '☆' }}
+            </span>
+          </div>
+          <span class="text-sm text-gray-600">({{ rendezVousData.avis_client.note }}/5)</span>
+        </div>
+
+        <div *ngIf="rendezVousData.avis_client.commentaire">
+          <span class="text-sm font-medium text-gray-700">Commentaire:</span>
+          <p class="mt-1 text-gray-600">{{ rendezVousData.avis_client.commentaire }}</p>
+        </div>
+
+        <p class="text-xs text-gray-500">
+          Avis donné le {{ formatDate(rendezVousData.avis_client.date_avis) }}
+        </p>
+      </div>
+
+      <!-- Bouton pour donner un avis -->
+      <div *ngIf="rendezVousData.peut_donner_avis" class="text-center">
+        <p class="text-gray-600 mb-4">Votre rendez-vous est terminé. Donnez votre avis sur le service !</p>
+        <button (click)="ouvrirModalAvis()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          Donner mon avis
+        </button>
+      </div>
+
+      <!-- Message si pas encore possible -->
+      <div *ngIf="!rendezVousData.peut_donner_avis && (!rendezVousData.avis_client || !rendezVousData.avis_client.note)"
+           class="text-center text-gray-500">
+        <p>Vous pourrez donner votre avis une fois le rendez-vous terminé.</p>
+      </div>
     </div>
   </div>
+
+  <!-- Modal pour donner un avis -->
+  <div *ngIf="modalAvisOuvert" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+
+      <!-- Header du modal -->
+      <div class="flex justify-between items-center p-6 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">Donner votre avis</h3>
+        <button (click)="fermerModalAvis()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Corps du modal -->
+      <div class="p-6">
+        <!-- Erreur dans le modal -->
+        <div *ngIf="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+          {{ error }}
+        </div>
+
+        <!-- Sélection de note -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Note *</label>
+          <div class="flex space-x-2">
+            <button *ngFor="let etoile of getEtoiles(5)"
+                    (click)="selectionnerNote(etoile)"
+                    class="text-3xl transition-colors hover:scale-110 transform"
+                    [class.text-yellow-400]="etoile <= noteSelectionnee"
+                    [class.text-gray-300]="etoile > noteSelectionnee">
+              ★
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Cliquez sur les étoiles pour noter</p>
+        </div>
+
+        <!-- Commentaire -->
+        <div class="mb-6">
+          <label for="commentaire" class="block text-sm font-medium text-gray-700 mb-2">
+            Commentaire (optionnel)
+          </label>
+          <textarea id="commentaire"
+                    [(ngModel)]="commentaireAvis"
+                    rows="4"
+                    placeholder="Partagez votre expérience..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Footer du modal -->
+      <div class="flex justify-end space-x-3 p-6 border-t">
+        <button (click)="fermerModalAvis()"
+                [disabled]="loadingAvis"
+                class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50">
+          Annuler
+        </button>
+        <button (click)="soumettreAvis()"
+                [disabled]="loadingAvis || noteSelectionnee === 0"
+                class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50 flex items-center">
+          <div *ngIf="loadingAvis" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+          {{ loadingAvis ? 'Envoi...' : 'Envoyer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

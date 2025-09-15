@@ -172,9 +172,9 @@ export class RendezvousListComponent implements OnInit {
   /**
    * Navigation vers les détails (fonction existante conservée)
    */
-  viewDetails(id: string): void {
-    this.router.navigate(['/rendezvous', id]);
-  }
+  // viewDetails(id: string): void {
+  //   this.router.navigate(['/rendezvous', id]);
+  // }
 
   /**
    * Formate une date pour l'affichage
@@ -330,11 +330,11 @@ export class RendezvousListComponent implements OnInit {
   /**
    * Fonction temporaire pour le bouton réparer (ne fait rien pour l'instant)
    */
-  onReparer(rdvId: string): void {
-    // Fonction vide pour éviter les erreurs
-    console.log('Bouton réparer cliqué pour le RDV:', rdvId);
-    // TODO: Implémenter la logique de réparation
-  }
+  // onReparer(rdvId: string): void {
+  //   // Fonction vide pour éviter les erreurs
+  //   console.log('Bouton réparer cliqué pour le RDV:', rdvId);
+  //   // TODO: Implémenter la logique de réparation
+  // }
 
   /**
    * Vérifie s'il y a des prestations qui peuvent être commencées
