@@ -59,15 +59,15 @@ export const routes: Routes = [
     // { path: 'manager/prestations/add', component: FormPrestationComponent },
     // { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
     // { path: 'manager/dashboard', component: DashboardComponent },
-    { path: 'manager/prestations', component: ListePrestationsComponent },
-    { path: 'manager/prestations/add', component: FormPrestationComponent },
-    { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
+    // { path: 'manager/prestations', component: ListePrestationsComponent },
+    // { path: 'manager/prestations/add', component: FormPrestationComponent },
+    // { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
 
 
     // { path: 'mecanicien/rendez-vous', component: RendezvousListComponent },
 
 
-    { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
+    // { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
 
     {
       path: 'manager',
