@@ -1,0 +1,113 @@
+<!-- En-tête du dashboard -->
+<div class="mb-6">
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">Tableau de bord</h1>
+  <p class="text-gray-600">Vue d'ensemble de votre activité</p>
+</div>
+
+<!-- Statistiques -->
+<app-stats-header></app-stats-header>
+
+<!-- Rendez-vous d'aujourd'hui -->
+<div class="bg-white rounded-lg shadow border border-gray-200">
+  <div class="flex justify-between items-center p-6 border-b border-gray-200">
+    <h2 class="text-xl font-semibold text-gray-900">Rendez-vous d'aujourd'hui</h2>
+    <button (click)="voirTousLesRdv()"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+      Voir tous →
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <span class="ml-3 text-gray-600">Chargement...</span>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error" class="p-6 text-center">
+    <p class="text-red-600">{{ error }}</p>
+    <button (click)="chargerRdvAujourdhui()"
+            class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des RDV -->
+  <div *ngIf="!loading && !error && rdvAujourdhui.length > 0" class="divide-y divide-gray-200">
+    <div *ngFor="let rdv of rdvAujourdhui"
+         class="p-6 hover:bg-gray-50 cursor-pointer transition-colors"
+         (click)="voirDetailRdv(rdv.id)">
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h3 class="font-semibold text-gray-900">{{ rdv.client.nom_complet }}</h3>
+          <p class="text-sm text-gray-600 mt-1">{{ rdv.vehicule }}</p>
+          <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+            <span>{{ formatTime(rdv.date_rdv) }}</span>
+            <span>{{ rdv.prestations.length }} prestations</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                [ngClass]="getStatutClass(rdv.statut)">
+            {{ rdv.statut }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun RDV aujourd'hui -->
+  <div *ngIf="!loading && !error && rdvAujourdhui.length === 0" class="p-8 text-center">
+    <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+      <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous aujourd'hui</h3>
+    <p class="text-gray-500">Profitez de cette journée libre !</p>
+  </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+    <h3 class="font-semibold text-gray-900 mb-3">Actions rapides</h3>
+    <div class="space-y-2">
+      <button (click)="voirTousLesRdv()"
+              class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        📋 Voir tous les RDV
+      </button>
+      <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        📊 Rapports
+      </button>
+      <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        ⚙️ Paramètres
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+    <h3 class="font-semibold text-gray-900 mb-3">Informations</h3>
+    <div class="text-sm text-gray-600 space-y-2">
+      <p>Dernière connexion : {{ getDateConnexion() }}</p>
+      <p>Garage : HB Auto</p>
+      <p>Statut : En ligne</p>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+    <h3 class="font-semibold text-gray-900 mb-3">Aide</h3>
+    <div class="space-y-2">
+      <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        📞 Support
+      </button>
+      <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        📖 Documentation
+      </button>
+      <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+        💡 Suggestions
+      </button>
+    </div>
+  </div>
+</div>

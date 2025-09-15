@@ -8,7 +8,7 @@ import { FormPrestationComponent } from './components/manager/service_propose/fo
 import { AvisComponent } from './components/client/avis/avis/avis.component';
 import { SuiviPrestationComponent } from './components/client/suivi-prestation/suivi-prestation/suivi-prestation.component';
 import { RendezvousListComponent } from './components/mecanicien/rendezvous-list/rendezvous-list.component';
-import { RendezvousDetailsComponent } from './components/mecanicien/rendezvous-details/rendezvous-details.component';
+// import { RendezvousDetailsComponent } from './components/mecanicien/rendezvous-details/rendezvous-details.component';
 import { DefaultLayoutComponent } from './components/layouts/default-layout/default-layout.component';
 import { PrestationDetailComponent } from './components/client/prestation-detail/prestation-detail.component';
 import { ManagerComponent } from './components/manager/manager.component';
@@ -26,6 +26,7 @@ import { ConfirmationemailComponent } from './components/email/confirmationemail
 import { ResetPasswordComponent } from './components/email/reset-password/reset-password.component';
 import { DashboardComponent } from './components/manager/dashboard/dashboard.component';
 import { ListeStockPieceComponent } from './components/manager/tableau/liste-stock-piece/liste-stock-piece.component';
+import { MecanicienDashboardComponent } from './components/mecanicien/mecanicien-dashboard/mecanicien-dashboard.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -63,6 +64,9 @@ export const routes: Routes = [
     { path: 'manager/prestations/edit/:id', component: FormPrestationComponent },
 
 
+    // { path: 'mecanicien/rendez-vous', component: RendezvousListComponent },
+
+
     { path: 'rendezvous', component:RendezVousComponent,canActivate: [AuthGuard]  },
 
     {
@@ -80,13 +84,18 @@ export const routes: Routes = [
         // { path: 'prestations/add', component: FormPrestationComponent },
         // { path: 'prestations/edit/:id', component: FormPrestationComponent },
         { path: 'dashboard', component: DashboardComponent },
+        { path: 'prestations', component: ListePrestationsComponent },
+        { path: 'prestations/add', component: FormPrestationComponent },
+        { path: 'prestations/edit/:id', component: FormPrestationComponent }
       ]
   },
   {
     path: 'mecanicien', component: LayoutComponent,
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: MecanicienDashboardComponent },
       { path: 'rendez-vous', component: RendezvousListComponent },
-      { path: 'rendez-vous/:id', component: RendezvousDetailsComponent}
+      // { path: 'rendez-vous/:id', component: RendezvousDetailsComponent}, // À décommenter plus tard
     ]
   }
 
