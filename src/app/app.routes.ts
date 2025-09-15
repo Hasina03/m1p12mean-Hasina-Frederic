@@ -84,6 +84,9 @@ export const routes: Routes = [
         // { path: 'prestations/add', component: FormPrestationComponent },
         // { path: 'prestations/edit/:id', component: FormPrestationComponent },
         { path: 'dashboard', component: DashboardComponent },
+        { path: 'prestations', component: ListePrestationsComponent },
+        { path: 'prestations/add', component: FormPrestationComponent },
+        { path: 'prestations/edit/:id', component: FormPrestationComponent }
       ]
   },
   {
