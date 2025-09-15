@@ -1,114 +1,307 @@
-<div class="p-6 bg-white shadow-lg rounded-lg h-[600px] pb-20">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Liste des Rendez-vous</h2>
-  <div class="flex justify-between items-center mb-4">
-    <input
-      type="text"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearchTermChange()"
-      placeholder="Rechercher par nom/statut..."
-      class="w-1/3 px-4 py-2 border border-gray-300 rounded-md"
-    />
+<div class="p-6 bg-gradient-to-br from-blue-50 to-white shadow-xl rounded-xl h-[600px] pb-20 transition-all duration-300 hover:shadow-2xl">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-pulse">
+      Liste des Rendez-vous
+    </h2>
+    <div class="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
   </div>
-  <div class="overflow-auto h-[calc(100%_-_100px)]">
-    <table class="w-full border border-gray-300 rounded-lg overflow-hidden shadow-md">
-      <thead class="bg-gray-200 text-gray-700">
+
+  <div class="flex justify-between items-center mb-6">
+    <div class="relative w-1/3 group">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchTermChange()"
+        placeholder="Rechercher par nom/statut..."
+        class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none hover:border-gray-300 shadow-sm hover:shadow-md"
+      />
+      <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors duration-300 group-focus-within:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="overflow-auto h-[calc(100%_-_140px)] scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-gray-100">
+    <table class="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300">
+      <thead class="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
         <tr>
-          <th class="px-4 py-3 border">Nom</th>
-          <th class="px-4 py-3 border">Date</th>
-          <th class="px-4 py-3 border">Prestation</th>
-          <th class="px-4 py-3 border">Status</th>
-          <th class="px-4 py-3 border">Mécanicien</th>
-          <th class="px-4 py-3 border">Facture</th>
+          <th class="px-6 py-4 text-left font-semibold uppercase tracking-wider text-sm border-r border-blue-400 last:border-r-0">
+            <div class="flex items-center space-x-2">
+              <span>Nom</span>
+              <div class="w-1 h-1 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-left font-semibold uppercase tracking-wider text-sm border-r border-blue-400 last:border-r-0">Date</th>
+          <th class="px-6 py-4 text-left font-semibold uppercase tracking-wider text-sm border-r border-blue-400 last:border-r-0">Prestation</th>
+          <th class="px-6 py-4 text-left font-semibold uppercase tracking-wider text-sm border-r border-blue-400 last:border-r-0">Status</th>
+          <th class="px-6 py-4 text-left font-semibold uppercase tracking-wider text-sm border-r border-blue-400 last:border-r-0">Mécanicien</th>
+          <th class="px-6 py-4 text-center font-semibold uppercase tracking-wider text-sm">Facture</th>
         </tr>
       </thead>
-      <tbody class="text-gray-600">
-        <tr class="hover:bg-gray-100 transition" *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
-          <td class="px-4 py-3 border whitespace-nowrap">
-            {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
+      <tbody class="text-gray-700">
+        <tr class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 transform hover:scale-[1.01] hover:shadow-md border-b border-gray-100 group"
+            *ngFor="let rendezvous of filteredRendezVous | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index"
+            [style.animation-delay]="i * 0.1 + 's'">
+          <td class="px-6 py-4 border-r border-gray-100 whitespace-nowrap font-medium">
+            <div class="flex items-center space-x-2">
+              <div class="w-2 h-2 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span class="group-hover:text-blue-600 transition-colors duration-300">
+                {{ rendezvous.client_id?.nom }} {{ rendezvous.client_id?.prenom }}
+              </span>
+            </div>
           </td>
-          <td class="px-4 py-3 border">{{ rendezvous.date_rdv | date:'dd/MM/yyyy HH:mm' }}</td>
-          <td class="px-4 py-3 border">
-            <ul class="list-disc pl-4">
-              <li *ngFor="let prestation of rendezvous.prestations">
-                {{ prestation.prestation_id?.nom }}
+          <td class="px-6 py-4 border-r border-gray-100">
+            <div class="bg-gray-50 px-3 py-1 rounded-full text-sm group-hover:bg-blue-100 transition-colors duration-300">
+              {{ rendezvous.date_rdv | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+          </td>
+          <td class="px-6 py-4 border-r border-gray-100">
+            <ul class="space-y-1">
+              <li *ngFor="let prestation of rendezvous.prestations" class="flex items-center space-x-2">
+                <div class="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                <span class="text-sm">{{ prestation.prestation_id?.nom }}</span>
               </li>
             </ul>
           </td>
-          <td class="px-4 py-3 border">{{ rendezvous.statut }}</td>
-          <td class="px-4 py-3 border whitespace-nowrap">
-            {{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}
+          <td class="px-6 py-4 border-r border-gray-100">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider
+                         bg-green-100 text-green-800 shadow-sm transition-all duration-300 hover:shadow-md">
+              {{ rendezvous.statut }}
+            </span>
           </td>
-          <td class="px-4 py-3 border text-center">
-            <button (click)="openModal(rendezvous._id)"
-                    class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition">
-              Voir Détails
-            </button>
+          <td class="px-6 py-4 border-r border-gray-100 whitespace-nowrap">
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                {{ (rendezvous.mecanicien_id?.nom || '')[0] }}{{ (rendezvous.mecanicien_id?.prenom || '')[0] }}
+              </div>
+              <span class="font-medium">{{ rendezvous.mecanicien_id?.nom }} {{ rendezvous.mecanicien_id?.prenom }}</span>
+            </div>
           </td>
+       <td class="px-6 py-4 text-center">
+  <div class="flex justify-center space-x-2">
+    <!-- Bouton Voir Détails -->
+    <button (click)="openModal(rendezvous._id)"
+            class="group relative bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg font-medium
+                   hover:from-blue-500 hover:to-purple-600 hover:shadow-lg hover:-translate-y-1
+                   transform transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200
+                   active:scale-95">
+      <span class="relative z-10">Voir Détails</span>
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </button>
+
+    <!-- Bouton Voir l’amélioration -->
+    <button (click)="voirAmelioration(rendezvous._id)"
+            class="group relative bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg font-medium
+                   hover:from-green-600 hover:to-emerald-700 hover:shadow-lg hover:-translate-y-1
+                   transform transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-200
+                   active:scale-95">
+      <span class="relative z-10">Voir l’amélioration</span>
+      <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </button>
+  </div>
+</td>
+
         </tr>
       </tbody>
     </table>
   </div>
-  <div class="flex items-center justify-between p-3">
-    <p class="block text-sm text-slate-500">
-      Page {{ page }} de {{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}
+
+  <div class="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm rounded-xl mt-4 shadow-sm">
+    <p class="block text-sm text-slate-600 font-medium">
+      Page <span class="text-blue-600 font-bold">{{ page }}</span> de
+      <span class="text-blue-600 font-bold">{{ (filteredRendezVous.length / itemsPerPage) | number: '1.0-0' }}</span>
     </p>
-    <pagination-controls (pageChange)="page = $event" previousLabel="Précédent" nextLabel="Suivant"></pagination-controls>
+    <pagination-controls
+      (pageChange)="page = $event"
+      previousLabel="← Précédent"
+      nextLabel="Suivant →"
+      class="pagination-custom">
+    </pagination-controls>
   </div>
 </div>
-<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg max-h-[80vh] overflow-auto">
-    <div class="flex justify-between items-center">
-      <button type="button" class="text-gray-500 ml-auto" (click)="closeModal()">
-        <span class="text-2xl">&times;</span>
-      </button>
+
+<!-- Modal avec animations améliorées -->
+<div *ngIf="isModalOpen"
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+  <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-4xl max-h-[85vh] overflow-hidden
+              transform transition-all duration-300 animate-slideUp">
+
+    <!-- Header du modal -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+      <div class="flex justify-between items-center">
+        <h4 class="text-2xl font-bold flex items-center space-x-3">
+          <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <span>Facture Détaillée</span>
+        </h4>
+        <button type="button"
+                class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200 hover:rotate-90 transform"
+                (click)="closeModal()">
+          <span class="text-2xl font-light">&times;</span>
+        </button>
+      </div>
     </div>
-    <div class="mt-4">
-      <h5 class="text-xl font-semibold mt-6">Détails de la Facture</h5>
-      <table class="w-full table-auto border-collapse border border-gray-300 mt-4">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-4 py-2 text-left">Prestation</th>
-            <th class="px-4 py-2 text-left">Description</th>
-            <th class="px-4 py-2 text-left">Prix</th>
-          </tr>
-        </thead>
-        <tbody>
-       <tr *ngFor="let prestation of selectedRendezvous?.prestations">
-          <td class="border px-4 py-2">{{ prestation.nom }}</td>
-          <td class="border px-4 py-2">{{ prestation.description }}</td>
-          <td class="border px-4 py-2">{{ prestation.prix_main_oeuvre }} Ar</td>
-        </tr>
 
-        </tbody>
-      </table>
+    <!-- Contenu du modal -->
+    <div class="p-6 overflow-auto max-h-[calc(85vh-120px)]">
 
-      <h5 class="text-xl font-semibold mt-6">Pièces</h5>
-      <table class="w-full table-auto border-collapse border border-gray-300 mt-4">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-4 py-2 text-left">Nom de la Pièce</th>
-            <th class="px-4 py-2 text-left">Prix</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let piece of selectedRendezvous?.pieces">
-            <td class="border px-4 py-2">{{ piece.nom }}</td>
-            <td class="border px-4 py-2">{{ piece.prix }} Ar</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Section Prestations -->
+      <div class="mb-8">
+        <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
+          <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+          </div>
+          <span>Détails des Prestations</span>
+        </h5>
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl overflow-hidden shadow-sm">
+          <table class="w-full">
+            <thead class="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+              <tr>
+                <th class="px-6 py-3 text-left font-semibold">Prestation</th>
+                <th class="px-6 py-3 text-left font-semibold">Description</th>
+                <th class="px-6 py-3 text-right font-semibold">Prix</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              <tr *ngFor="let prestation of selectedRendezvous?.prestations; let i = index"
+                  class="border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200"
+                  [style.animation-delay]="i * 0.1 + 's'">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ prestation.nom }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ prestation.description }}</td>
+                <td class="px-6 py-4 text-right font-bold text-blue-600">{{ prestation.prix_main_oeuvre }} Ar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      <div class="flex justify-between items-center mt-6">
-        <h5 class="text-xl font-semibold">Total de la Facture</h5>
-        <div class="flex items-center">
-          <p class="text-xl font-semibold mr-4">{{ selectedRendezvous?.total  }} Ar</p>
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition" (click)="exportPdf()">
-            Exporter PDF
-          </button>
+      <!-- Section Pièces -->
+      <div class="mb-8">
+        <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
+          <div class="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+          </div>
+          <span>Pièces Utilisées</span>
+        </h5>
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl overflow-hidden shadow-sm">
+          <table class="w-full">
+            <thead class="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+              <tr>
+                <th class="px-6 py-3 text-left font-semibold">Nom de la Pièce</th>
+                <th class="px-6 py-3 text-right font-semibold">Prix</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              <tr *ngFor="let piece of selectedRendezvous?.pieces; let i = index"
+                  class="border-b border-gray-100 hover:bg-purple-50 transition-colors duration-200"
+                  [style.animation-delay]="i * 0.1 + 's'">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ piece.nom }}</td>
+                <td class="px-6 py-4 text-right font-bold text-purple-600">{{ piece.prix }} Ar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section Total -->
+      <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 shadow-lg">
+        <div class="flex justify-between items-center">
+          <h5 class="text-2xl font-bold text-gray-800 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <span>Total de la Facture</span>
+          </h5>
+          <div class="flex items-center space-x-4">
+            <p class="text-3xl font-bold text-green-600">{{ selectedRendezvous?.total }} Ar</p>
+            <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold
+                           hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:-translate-y-1
+                           transform transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200
+                           active:scale-95 flex items-center space-x-2"
+                    (click)="exportPdf()">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Exporter PDF</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<style>
+/* Animations personnalisées */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Scrollbar personnalisée */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-blue-300::-webkit-scrollbar-thumb {
+  background-color: #93c5fd;
+  border-radius: 9999px;
+}
+
+.scrollbar-track-gray-100::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+}
+
+/* Style pour la pagination */
+.pagination-custom ::ng-deep .ngx-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-custom ::ng-deep .ngx-pagination .current {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.pagination-custom ::ng-deep .ngx-pagination a,
+.pagination-custom ::ng-deep .ngx-pagination button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  border: 1px solid #e5e7eb;
+}
+
+.pagination-custom ::ng-deep .ngx-pagination a:hover,
+.pagination-custom ::ng-deep .ngx-pagination button:hover {
+  background: linear-gradient(135deg, #ddd6fe, #e0e7ff);
+  transform: translateY(-1px);
+}
+</style>
