@@ -1,35 +1,229 @@
-<div class="min-h-screen flex flex-col items-center justify-center">
-    <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">📊 Tableau de Bord du Manager</h1>
+<div class="min-h-screen bg-gray-50 p-4">
+  <!-- En-tête -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 text-center mb-2">📊 Tableau de Bord Manager</h1>
+    <p class="text-gray-600 text-center">Vue d'ensemble des activités du garage</p>
+  </div>
 
-    <!-- Conteneur principal -->
-    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Carte Total Rendez-vous -->
-      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
-        <div class="p-3 bg-blue-500 text-white rounded-full text-2xl">📅</div>
-        <h3 class="text-lg font-semibold text-gray-700 mt-2">Total Rendez-vous</h3>
-        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalRendezVous }}</p>
-      </div>
-
-      <!-- Carte Nombre de Clients -->
-      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
-        <div class="p-3 bg-green-500 text-white rounded-full text-2xl">👥</div>
-        <h3 class="text-lg font-semibold text-gray-700 mt-2">Clients Inscrits</h3>
-        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalClients }}</p>
-      </div>
-
-      <!-- Carte Prestations Effectuées -->
-      <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center transition transform hover:scale-105">
-        <div class="p-3 bg-yellow-500 text-white rounded-full text-2xl">🛠️</div>
-        <h3 class="text-lg font-semibold text-gray-700 mt-2">Prestations Effectuées</h3>
-        <p class="text-2xl font-bold text-gray-800">{{ generalStats.totalPrestations }}</p>
+  <!-- Cartes de statistiques principales -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Rendez-vous -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Total Rendez-vous</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ loading.general ? '...' : (generalStats?.totalRendezVous || 0) }}
+          </p>
+          <p class="text-xs text-green-600 mt-1">
+            {{ loading.general ? '' : (generalStats?.rendezVousAujourdHui || 0) }} aujourd'hui
+          </p>
+        </div>
+        <div class="p-3 bg-blue-100 text-blue-600 rounded-lg">
+          📅
+        </div>
       </div>
     </div>
 
-    <!-- Section Graphique -->
-    <div class="w-full max-w-4xl mt-6 bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
-      <h2 class="text-xl font-semibold text-gray-700 text-center mb-4">🏆 Top Prestations Demandées</h2>
-      <div class="w-72 h-72 md:w-96 md:h-96">
-        <canvas id="pieChart"></canvas>
+    <!-- Clients -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Clients</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ loading.general ? '...' : (generalStats?.totalClients || 0) }}
+          </p>
+        </div>
+        <div class="p-3 bg-green-100 text-green-600 rounded-lg">
+          👥
+        </div>
+      </div>
+    </div>
+
+    <!-- Techniciens -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Techniciens</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ loading.general ? '...' : (generalStats?.totalTechniciens || 0) }}
+          </p>
+        </div>
+        <div class="p-3 bg-purple-100 text-purple-600 rounded-lg">
+          🔧
+        </div>
+      </div>
+    </div>
+
+    <!-- Satisfaction Client -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Satisfaction</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ loading.general ? '...' : getFormattedAverage() }}
+          </p>
+          <div class="flex mt-1" *ngIf="!loading.general && generalStats && generalStats.moyenneNote">
+            <span *ngFor="let star of getStarArray()"
+                  [class]="star ? 'text-yellow-400' : 'text-gray-300'">⭐</span>
+          </div>
+          <p class="text-xs text-gray-500" *ngIf="!loading.general">
+            {{ generalStats?.totalAvis || 0 }} avis
+          </p>
+        </div>
+        <div class="p-3 bg-yellow-100 text-yellow-600 rounded-lg">
+          ⭐
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Ligne 2: Graphiques et Alertes -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Statuts des Rendez-vous -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Statuts des Rendez-vous</h3>
+      <div class="h-64">
+        <canvas id="statusChart"></canvas>
+      </div>
+      <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+        <div class="text-center p-2 bg-amber-50 rounded">
+          <span class="font-medium text-amber-600">En attente</span>
+          <p class="text-amber-800">{{ generalStats?.rendezVousParStatut?.enAttente || 0 }}</p>
+        </div>
+        <div class="text-center p-2 bg-blue-50 rounded">
+          <span class="font-medium text-blue-600">Confirmés</span>
+          <p class="text-blue-800">{{ generalStats?.rendezVousParStatut?.confirmes || 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Prestations -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">🏆 Top Prestations</h3>
+      <div class="h-64">
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="mt-4" *ngIf="!loading.prestations && topPrestations.length > 0">
+        <div *ngFor="let prestation of topPrestations.slice(0,3); let i = index"
+             class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+          <span class="text-sm text-gray-600 truncate">{{ prestation.nom }}</span>
+          <span class="text-sm font-medium text-gray-900">{{ prestation.totalDemandes }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertes Stock -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">🚨 Alertes Stock</h3>
+        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+          {{ totalAlert }} alertes
+        </span>
+      </div>
+
+      <div class="space-y-3 max-h-64 overflow-y-auto" *ngIf="!loading.pieces">
+        <div *ngFor="let piece of piecesAlert.slice(0,6)"
+             [class]="'p-3 rounded-lg border ' + getStockAlertClass(piece)">
+          <div class="flex justify-between items-start">
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-sm truncate">{{ piece.nomPiece }}</p>
+              <p class="text-xs opacity-75">
+                {{ piece.vehicule ? piece.vehicule.marque : '' }} {{ piece.vehicule ? piece.vehicule.modele : '' }}
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-bold">{{ piece.quantite_stock }}</p>
+              <p class="text-xs opacity-75">seuil: {{ piece.seuil_alerte }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="piecesAlert.length === 0" class="text-center py-4 text-gray-500">
+          <p class="text-sm">🎉 Aucune alerte stock</p>
+        </div>
+
+        <div *ngIf="piecesAlert.length > 6" class="text-center">
+          <p class="text-xs text-gray-500">
+            +{{ piecesAlert.length - 6 }} autres alertes
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="loading.pieces" class="text-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Chiffre d'Affaires -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">💰 Estimation Chiffre d'Affaires</h3>
+
+    <!-- Sélecteur de période -->
+    <div class="flex flex-wrap gap-4 mb-6">
+      <div class="flex-1 min-w-0">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Du</label>
+        <input type="date" [(ngModel)]="dateFrom"
+               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="flex-1 min-w-0">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Au</label>
+        <input type="date" [(ngModel)]="dateTo"
+               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="flex items-end">
+        <button (click)="fetchRevenue()"
+                [disabled]="loading.revenue"
+                class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          <span *ngIf="loading.revenue" class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+          {{ loading.revenue ? 'Calcul...' : 'Calculer' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div *ngIf="revenueData" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+        <p class="text-sm text-green-600 font-medium">Chiffre d'Affaires Estimé</p>
+        <p class="text-2xl font-bold text-green-800">{{ formatCurrency(revenueData.totalRevenu) }}</p>
+        <p class="text-xs text-green-600 mt-1">{{ revenueData.avertissement }}</p>
+      </div>
+
+      <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <p class="text-sm text-blue-600 font-medium">Prestations Effectuées</p>
+        <p class="text-2xl font-bold text-blue-800">{{ revenueData.nombrePrestations }}</p>
+      </div>
+
+      <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <p class="text-sm text-purple-600 font-medium">Rendez-vous Terminés</p>
+        <p class="text-2xl font-bold text-purple-800">{{ revenueData.nombreRendezVous }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résumé rapide -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white rounded-lg p-4 border border-gray-100 text-center">
+      <p class="text-sm text-gray-600">Véhicules Enregistrés</p>
+      <p class="text-xl font-bold text-gray-900">{{ generalStats?.totalVehicules || 0 }}</p>
+    </div>
+
+    <div class="bg-white rounded-lg p-4 border border-gray-100 text-center">
+      <p class="text-sm text-gray-600">Pièces en Stock</p>
+      <p class="text-xl font-bold text-gray-900">{{ generalStats?.totalPieces || 0 }}</p>
+    </div>
+
+    <div class="bg-white rounded-lg p-4 border border-gray-100 text-center">
+      <p class="text-sm text-gray-600">Taux de Réussite</p>
+      <p class="text-xl font-bold text-green-600">{{ getCompletionRate() }}%</p>
+    </div>
+
+    <div class="bg-white rounded-lg p-4 border border-gray-100 text-center">
+      <p class="text-sm text-gray-600">Pièces en Alerte</p>
+      <p class="text-xl font-bold" [class]="totalAlert > 0 ? 'text-red-600' : 'text-green-600'">
+        {{ totalAlert }}
+      </p>
+    </div>
+  </div>
+</div>

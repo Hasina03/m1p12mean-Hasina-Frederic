@@ -1,77 +1,236 @@
-<div class="max-w-5xl mx-auto px-6 py-8 bg-white rounded-lg shadow">
-  <h2 class="text-2xl font-bold mb-6">{{ isEditing ? 'Modifier' : 'Créer' }} une Prestation</h2>
-
-  <form (ngSubmit)="submitForm()" class="space-y-6">
-    <div>
-      <label class="block font-medium">Nom</label>
-      <input type="text" [(ngModel)]="prestation.nom" name="nom" class="w-full mt-1 p-2 border rounded" required>
-    </div>
-
-    <div>
-      <label class="block font-medium">Description</label>
-      <textarea [(ngModel)]="prestation.description" name="description" class="w-full mt-1 p-2 border rounded"></textarea>
-    </div>
-
-    <div>
-      <label class="block font-medium">Prix Main d'œuvre</label>
-      <input type="number" [(ngModel)]="prestation.prix_main_oeuvre" name="prix_main_oeuvre" class="w-full mt-1 p-2 border rounded" required>
-    </div>
-
-    <div class="mt-6">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-lg font-semibold">Processus</h3>
-        <button type="button" (click)="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Ajouter un processus
-        </button>
-      </div>
-
-      <ul class="space-y-3">
-        <li *ngFor="let p of prestation.processus; let i = index; trackBy: trackByIndex" class="border p-3 rounded">
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="font-semibold">Étape {{ i + 1 }}: {{ p.nom_etape }}</p>
-              <p class="text-sm text-gray-600">Pièces liées: {{ p.pieces_possibles.length }}</p>
-            </div>
-            <button type="button" (click)="removeProcessus(i)" class="text-red-500 hover:underline">Supprimer</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div class="text-right">
-      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-        {{ isEditing ? 'Modifier' : 'Créer' }}
+<div class="min-h-screen bg-gray-50 p-6">
+  <!-- En-tête -->
+  <div class="mb-8">
+    <div class="flex items-center gap-4 mb-4">
+      <button (click)="goBack()"
+              class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+        ← Retour
       </button>
-    </div>
-  </form>
-
-  <!-- Modale -->
-  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg w-full max-w-xl shadow-lg">
-      <h3 class="text-xl font-semibold mb-4">Ajouter un Processus</h3>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block font-medium">Nom de l'étape</label>
-          <input type="text" [(ngModel)]="newProcessus.nom_etape" name="nom_etape" class="w-full p-2 border rounded" required>
-        </div>
-
-        <div>
-          <label class="block font-medium">Pièces associées</label>
-          <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border rounded p-2">
-            <label *ngFor="let piece of pieces" class="flex items-center space-x-2">
-              <input type="checkbox" [checked]="newProcessus.pieces_possibles.includes(piece._id)"
-                     (change)="togglePieceSelection(piece._id)">
-              <span>{{ piece.nom }}</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-end mt-6 space-x-3">
-        <button (click)="showModal = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Annuler</button>
-        <button (click)="confirmAddProcessus()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Ajouter</button>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">
+          {{ isEditMode ? 'Modifier la Prestation' : 'Nouvelle Prestation' }}
+        </h1>
+        <p class="text-gray-600 mt-1">
+          {{ isEditMode ? 'Modifiez les informations de la prestation' : 'Créez un nouveau service pour votre garage' }}
+        </p>
       </div>
     </div>
   </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+    <p class="text-gray-600">Chargement des données...</p>
+  </div>
+
+  <!-- Formulaire principal -->
+  <form *ngIf="!loading" [formGroup]="prestationForm" (ngSubmit)="onSubmit()" class="space-y-8">
+
+    <!-- Section informations de base -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <span>📋</span> Informations de Base
+      </h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Nom de la prestation -->
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Nom de la Prestation *
+          </label>
+          <input
+            type="text"
+            formControlName="nom"
+            placeholder="Ex: Vidange complète, Changement de freins..."
+            [class]="'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ' +
+                     (hasError('nom') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+          />
+          <p *ngIf="hasError('nom')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('nom') }}
+          </p>
+        </div>
+
+        <!-- Description -->
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Description *
+          </label>
+          <textarea
+            formControlName="description"
+            rows="4"
+            placeholder="Décrivez en détail cette prestation de service..."
+            [class]="'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none ' +
+                     (hasError('description') ? 'border-red-300 bg-red-50' : 'border-gray-300')">
+          </textarea>
+          <p *ngIf="hasError('description')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('description') }}
+          </p>
+        </div>
+
+        <!-- Prix main d'œuvre -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Prix Main d'Œuvre (Ar) *
+          </label>
+          <input
+            type="number"
+            formControlName="prix_main_oeuvre"
+            min="0"
+            placeholder="0"
+            [class]="'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ' +
+                     (hasError('prix_main_oeuvre') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+          />
+          <p *ngIf="hasError('prix_main_oeuvre')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('prix_main_oeuvre') }}
+          </p>
+          <p *ngIf="!hasError('prix_main_oeuvre') && prestationForm.get('prix_main_oeuvre')?.value > 0"
+             class="mt-1 text-sm text-green-600">
+            {{ formatPrice(prestationForm.get('prix_main_oeuvre')?.value) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section suppléments par type de véhicule -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <span>🚗</span> Suppléments par Type de Véhicule
+        </h2>
+        <button
+          type="button"
+          (click)="addSupplement()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2">
+          <span>+</span> Ajouter un Supplément
+        </button>
+      </div>
+
+      <div *ngIf="supplementMainOeuvre.length === 0" class="text-center py-8 text-gray-500">
+        <div class="text-4xl mb-2">🚗</div>
+        <p class="text-sm">Aucun supplément configuré</p>
+        <p class="text-xs mt-1">Ajoutez des suppléments pour différents types de véhicules</p>
+      </div>
+
+      <div formArrayName="supplementMainOeuvre" class="space-y-4">
+        <div *ngFor="let supplement of supplementMainOeuvre.controls; let i = index"
+             [formGroupName]="i"
+             class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Type de Véhicule</label>
+              <select formControlName="typeVehicule"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Sélectionner un type</option>
+                <option *ngFor="let type of typesVehicule" [value]="type._id">
+                  {{ type.nom }}
+                </option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Supplément (Ar)</label>
+              <input type="number"
+                     formControlName="supplement"
+                     min="0"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <button
+              type="button"
+              (click)="removeSupplement(i)"
+              class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors mt-6">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section processus de travail -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <span>⚙️</span> Processus de Travail
+        </h2>
+        <button
+          type="button"
+          (click)="addProcessusEtape()"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2">
+          <span>+</span> Ajouter une Étape
+        </button>
+      </div>
+
+      <div *ngIf="processus.length === 0" class="text-center py-8 text-gray-500">
+        <div class="text-4xl mb-2">⚙️</div>
+        <p class="text-sm">Aucune étape définie</p>
+        <p class="text-xs mt-1">Définissez les étapes du processus de travail</p>
+      </div>
+
+      <div formArrayName="processus" class="space-y-4">
+        <div *ngFor="let etape of processus.controls; let i = index"
+             [formGroupName]="i"
+             class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-medium text-gray-900 flex items-center gap-2">
+              <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                Étape {{ i + 1 }}
+              </span>
+            </h3>
+            <button
+              type="button"
+              (click)="removeProcessusEtape(i)"
+              class="bg-red-500 hover:bg-red-600 text-white p-1 rounded text-xs transition-colors">
+              🗑️
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Nom de l'étape -->
+            <div class="lg:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'Étape</label>
+              <input
+                type="text"
+                formControlName="nom_etape"
+                placeholder="Ex: Vidange de l'huile, Remplacement plaquettes..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Pièces possibles -->
+            <div class="lg:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Pièces Possibles</label>
+              <select formControlName="pieces_possibles"
+                      multiple
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-32">
+                <option *ngFor="let piece of pieces" [value]="piece._id">
+                  {{ piece.nom }}
+                </option>
+              </select>
+              <p class="text-xs text-gray-500 mt-1">
+                Maintenez Ctrl/Cmd pour sélectionner plusieurs pièces
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+      <button
+        type="button"
+        (click)="goBack()"
+        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+        Annuler
+      </button>
+
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="prestationForm.invalid || submitLoading"
+          class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-8 py-3 rounded-lg transition-colors flex items-center gap-2">
+          <span *ngIf="submitLoading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+          {{ submitLoading ? 'Sauvegarde...' : (isEditMode ? 'Mettre à Jour' : 'Créer la Prestation') }}
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

@@ -1,0 +1,198 @@
+/* Animations personnalisées */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Conteneur principal avec animation */
+.min-h-screen {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Cartes statistiques avec effet hover amélioré */
+.hover\:shadow-md:hover {
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Animation des cartes au chargement */
+.grid > div {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.grid > div:nth-child(1) { animation-delay: 0.1s; }
+.grid > div:nth-child(2) { animation-delay: 0.2s; }
+.grid > div:nth-child(3) { animation-delay: 0.3s; }
+.grid > div:nth-child(4) { animation-delay: 0.4s; }
+
+/* Scrollbar personnalisée pour les alertes */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animation des alertes */
+.space-y-3 > div {
+  animation: slideIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.space-y-3 > div:nth-child(1) { animation-delay: 0.1s; }
+.space-y-3 > div:nth-child(2) { animation-delay: 0.2s; }
+.space-y-3 > div:nth-child(3) { animation-delay: 0.3s; }
+.space-y-3 > div:nth-child(4) { animation-delay: 0.4s; }
+.space-y-3 > div:nth-child(5) { animation-delay: 0.5s; }
+.space-y-3 > div:nth-child(6) { animation-delay: 0.6s; }
+
+/* Spinner de chargement amélioré */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus amélioré pour les inputs */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Button hover effects */
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Responsive canvas containers */
+canvas {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Badge animation */
+.bg-red-100 {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .grid {
+    gap: 1rem;
+  }
+
+  .text-3xl {
+    font-size: 1.875rem;
+  }
+
+  .p-6 {
+    padding: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .hover\:shadow-md:hover {
+    transform: none;
+  }
+
+  button {
+    display: none;
+  }
+
+  .bg-gray-50 {
+    background-color: white !important;
+  }
+}
+
+/* Skeleton loading effect */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border-gray-100 {
+    border-color: #000000;
+  }
+
+  .text-gray-600 {
+    color: #000000;
+  }
+
+  .bg-gray-50 {
+    background-color: #ffffff;
+  }
+}
