@@ -123,38 +123,6 @@
   gap: 0.5rem;
 }
 
-.sidebar-menu .logo h2 span {
-  background: var(--hover-bg);
-  color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  position: relative;
-  overflow: hidden;
-  animation: glow 3s ease-in-out infinite;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition);
-  z-index: 1; /* AJOUTÉ pour que le texte soit visible */
-}
-
-.sidebar-menu .logo h2 span::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shimmer 3s infinite;
-  z-index: 0; /* AJOUTÉ pour que l'animation soit derrière le texte */
-}
-
-
-.sidebar-menu .logo h2 span:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: var(--shadow-lg);
-}
 
 .menu {
   margin: 0;
@@ -459,7 +427,7 @@ button.menu-link:hover i {
 
 .user-info p {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: black;
   margin: 0;
   margin-top: 2px;
 }
