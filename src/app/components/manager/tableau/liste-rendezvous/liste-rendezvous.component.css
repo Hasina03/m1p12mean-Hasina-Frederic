@@ -1,53 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 * {
     font-family: 'Inter', sans-serif;
-}
-
-/* Animations premium */
-@keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200px 0;
-    }
-    100% {
-        background-position: calc(200px + 100%) 0;
-    }
-}
-
-.animate-slide-down {
-    animation: slideInDown 0.6s ease-out;
-}
-
-.animate-fade-scale {
-    animation: fadeInScale 0.5s ease-out;
-}
-
-.animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    background-size: 200px 100%;
-    animation: shimmer 2s infinite;
 }
 
 /* Glassmorphism effects */
@@ -169,81 +122,18 @@
     transform: translateY(-2px);
 }
 
-/* Animation pour les modals */
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.modal-content {
-    animation: modalSlideIn 0.3s ease-out;
-}
-
 /* Background body */
 body {
     background: linear-gradient(to bottom right, #f8fafc, #e0f2fe, #e0e7ff);
     min-height: 100vh;
 }
 
-/* Ajoutez ces styles CSS pour les animations des statistiques */
-
-.animate-pulse-value {
-  animation: pulseValue 0.6s ease-in-out;
-}
-
-@keyframes pulseValue {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-    color: #fbbf24; /* Couleur jaune lors de l'animation */
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Animation pour les cartes de statistiques */
+/* Styles pour les cartes de statistiques */
 .stats-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stats-card:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Animation spécifique pour les changements de valeurs */
-.value-updated {
-  animation: valueChange 0.8s ease-in-out;
-}
-
-@keyframes valueChange {
-  0% {
-    transform: scale(1);
-    background: linear-gradient(135deg, #10b981, #059669);
-  }
-  25% {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-  }
-  50% {
-    transform: scale(1.1);
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  }
-  75% {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-  }
-  100% {
-    transform: scale(1);
-    background: linear-gradient(135deg, #10b981, #059669);
-  }
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
