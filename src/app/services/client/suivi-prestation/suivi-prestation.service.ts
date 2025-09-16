@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SuiviPrestationService {
-  private apiUrl = 'http://localhost:5000/rendez-vous';
+  private apiUrl = 'https://m1p12mean-frederic-hasina.onrender.com/rendez-vous';
 
   constructor(private http: HttpClient) {}
 

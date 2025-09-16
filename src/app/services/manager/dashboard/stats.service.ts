@@ -71,7 +71,7 @@ export interface RevenueData {
   providedIn: 'root'
 })
 export class StatsService {
-  private apiUrl = 'http://localhost:5000/dashboard';
+  private apiUrl = 'https://m1p12mean-frederic-hasina.onrender.com/dashboard';
 
   constructor(private http: HttpClient) {}
 

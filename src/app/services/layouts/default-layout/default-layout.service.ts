@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DefaultLayoutService {
 
-  private apiUrl = 'http://localhost:5000/default-layout';
+  private apiUrl = 'https://m1p12mean-frederic-hasina.onrender.com/default-layout';
 
   constructor(private http: HttpClient) {}
 

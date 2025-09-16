@@ -59,7 +59,7 @@ export interface TypeVehiculeResponse {
   providedIn: 'root'
 })
 export class PrestationService {
-  private apiUrl = 'http://localhost:5000/services-proposes';
+  private apiUrl = 'https://m1p12mean-frederic-hasina.onrender.com/services-proposes';
 
   constructor(private http: HttpClient) {}
 

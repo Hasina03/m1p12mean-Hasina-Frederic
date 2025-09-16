@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AccueilService {
 
-  private apiUrl = 'http://localhost:5000/acceuil';
+  private apiUrl = 'https://m1p12mean-frederic-hasina.onrender.com/acceuil';
 
   constructor(private http: HttpClient) {}
 
